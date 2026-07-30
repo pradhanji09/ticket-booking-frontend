@@ -13,6 +13,7 @@ import Bookings from "./pages/Bookings";
 import AdminEvents from "./pages/AdminEvents";
 import AdminSeatOverview from "./pages/AdminSeatOverview";
 import AdminBookings from "./pages/AdminBookings";
+import AdminTransactions from "./pages/AdminTransactions";
 
 export default function App() {
   return (
@@ -92,7 +93,7 @@ export default function App() {
             path="/admin/transactions"
             element={
               <AdminRoute>
-                <h2>Admin Transactions</h2>
+                <AdminTransactions />
               </AdminRoute>
             }
           />
