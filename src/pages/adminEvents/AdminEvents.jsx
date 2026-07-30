@@ -55,7 +55,6 @@ export default function AdminEvents() {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    venue: "",
     eventDate: "",
     pricePerSeat: "",
   });
@@ -78,8 +77,8 @@ export default function AdminEvents() {
     try {
       const res = await getAdminEvents(p, 10);
       if (res.success) {
-        setEvents(res.data.events);
-        setPagination(res.data.pagination);
+        setEvents(res.events);
+        setPagination(res.pagination);
       }
     } catch (err) {}
   };
@@ -92,7 +91,6 @@ export default function AdminEvents() {
     setForm({
       name: "",
       description: "",
-      venue: "",
       eventDate: "",
       pricePerSeat: "",
     });
@@ -106,7 +104,6 @@ export default function AdminEvents() {
     const payload = {
       name: form.name,
       description: form.description,
-      venue: form.venue,
       eventDate: new Date(form.eventDate).toISOString(),
       pricePerSeat: paise,
     };
@@ -134,13 +131,12 @@ export default function AdminEvents() {
   };
 
   const handleEditClick = (event) => {
-    setEditingEventId(event.id);
+    setEditingEventId(event._id);
     setFormError("");
     setFormMessage("");
     setForm({
       name: event.name || "",
       description: event.description || "",
-      venue: event.venue || "",
       eventDate: formatDateForInput(event.eventDate),
       pricePerSeat: event.pricePerSeat
         ? (event.pricePerSeat / 100).toString()
@@ -227,17 +223,6 @@ export default function AdminEvents() {
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="eventVenue">Venue</Label>
-            <Input
-              id="eventVenue"
-              type="text"
-              value={form.venue}
-              onChange={(e) => setForm({ ...form, venue: e.target.value })}
-              required
-            />
-          </FormGroup>
-
-          <FormGroup>
             <Label htmlFor="eventDate">Event Date</Label>
             <Input
               id="eventDate"
@@ -284,7 +269,6 @@ export default function AdminEvents() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Venue</th>
               <th>Event Date</th>
               <th>Price (₹)</th>
               <th>Total Seats</th>
@@ -294,9 +278,8 @@ export default function AdminEvents() {
           </thead>
           <tbody>
             {events.map((event) => (
-              <tr key={event.id}>
+              <tr key={event._id || event.id}>
                 <td>{event.name}</td>
-                <td>{event.venue}</td>
                 <td>{new Date(event.eventDate).toLocaleString()}</td>
                 <td>₹{(event.pricePerSeat / 100).toFixed(2)}</td>
                 <td>{event.totalSeats}</td>
@@ -311,7 +294,7 @@ export default function AdminEvents() {
                     </SecondaryButton>
                     <DangerButton
                       style={{ padding: "4px 8px", fontSize: "12px" }}
-                      onClick={() => handleCancelEvent(event.id)}
+                      onClick={() => handleCancelEvent(event._id)}
                     >
                       Cancel
                     </DangerButton>
@@ -319,14 +302,14 @@ export default function AdminEvents() {
                       style={{ padding: "4px 8px", fontSize: "12px" }}
                       onClick={() =>
                         setSeatFormEventId(
-                          seatFormEventId === event.id ? null : event.id,
+                          seatFormEventId === event._id ? null : event._id,
                         )
                       }
                     >
                       Seats
                     </SecondaryButton>
                     <Link
-                      to={`/admin/events/${event.id}/seats`}
+                      to={`/admin/events/${event._id}/seats`}
                       style={{
                         fontSize: "12px",
                         color: "#1a1a1a",
@@ -337,10 +320,12 @@ export default function AdminEvents() {
                     </Link>
                   </FlexRow>
 
-                  {seatFormEventId === event.id && (
+                  {seatFormEventId === (event._id || event.id) && (
                     <Card style={{ marginTop: "8px", padding: "8px" }}>
                       <form
-                        onSubmit={(e) => handleBulkCreateSeats(e, event.id)}
+                        onSubmit={(e) =>
+                          handleBulkCreateSeats(e, event._id || event.id)
+                        }
                       >
                         <FormGroup>
                           <Label style={{ fontSize: "12px" }}>Seat Count</Label>

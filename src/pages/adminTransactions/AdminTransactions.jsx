@@ -97,10 +97,9 @@ export default function AdminTransactions() {
                 onChange={(e) => setReasonInput(e.target.value)}
               >
                 <option value="">All</option>
-                <option value="WALLET_TOPUP">WALLET_TOPUP</option>
-                <option value="BOOKING_PAYMENT">BOOKING_PAYMENT</option>
-                <option value="BOOKING_REFUND">BOOKING_REFUND</option>
-                <option value="ADMIN_ADJUSTMENT">ADMIN_ADJUSTMENT</option>
+                <option value="TOPUP">TOPUP</option>
+                <option value="BOOKING">BOOKING</option>
+                <option value="REFUND">REFUND</option>
               </Select>
             </div>
             <Button type="submit">Apply Filters</Button>
@@ -140,7 +139,10 @@ export default function AdminTransactions() {
       )}
 
       <PaginationContainer>
-        <SecondaryButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+        <SecondaryButton
+          disabled={page <= 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
           Previous
         </SecondaryButton>
         <span>

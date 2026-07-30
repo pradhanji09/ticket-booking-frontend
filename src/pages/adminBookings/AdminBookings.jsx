@@ -137,7 +137,7 @@ export default function AdminBookings() {
         </form>
       </Card>
 
-      {bookings.length === 0 ? (
+      {bookings?.length === 0 ? (
         <Card>No bookings found</Card>
       ) : (
         <Table>
@@ -150,7 +150,6 @@ export default function AdminBookings() {
               <th>Amount (₹)</th>
               <th>Status</th>
               <th>Date</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -163,16 +162,6 @@ export default function AdminBookings() {
                 <td>₹{(b.amount / 100).toFixed(2)}</td>
                 <td>{b.status}</td>
                 <td>{new Date(b.createdAt).toLocaleString()}</td>
-                <td>
-                  {b.status === "CONFIRMED" && (
-                    <DangerButton
-                      style={{ padding: "4px 8px", fontSize: "12px" }}
-                      onClick={() => handleCancelBooking(b.id)}
-                    >
-                      Cancel Booking
-                    </DangerButton>
-                  )}
-                </td>
               </tr>
             ))}
           </tbody>
@@ -180,7 +169,10 @@ export default function AdminBookings() {
       )}
 
       <PaginationContainer>
-        <SecondaryButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+        <SecondaryButton
+          disabled={page <= 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
           Previous
         </SecondaryButton>
         <span>

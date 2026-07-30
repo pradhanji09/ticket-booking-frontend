@@ -1,7 +1,7 @@
 import httpService from "../../api/httpService";
 
 export const getAdminBookings = (page = 1, limit = 20, currentFilters = {}) => {
-  let url = `/api/admin/bookings?page=${page}&limit=${limit}`;
+  let url = `/api/bookings/admin?page=${page}&limit=${limit}`;
   if (currentFilters.userId)
     url += `&userId=${encodeURIComponent(currentFilters.userId)}`;
   if (currentFilters.eventId)
@@ -13,5 +13,5 @@ export const getAdminBookings = (page = 1, limit = 20, currentFilters = {}) => {
 };
 
 export const cancelAdminBookingApi = (bookingId) => {
-  return httpService.post(`/api/admin/bookings/${bookingId}/cancel`);
+  return httpService.post(`/api/bookings/${bookingId}/cancel`);
 };

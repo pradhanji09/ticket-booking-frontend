@@ -61,6 +61,12 @@ const SeatButton = styled.button`
         : theme.colors.textMuted};
   opacity: ${({ isAvailable, isSelected }) =>
     isAvailable || isSelected ? 1 : 0.6};
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+  }
 `;
 
 export default function SeatSelection() {
@@ -76,7 +82,7 @@ export default function SeatSelection() {
     try {
       const res = await getEventDetails(id);
       if (res.success) {
-        setEvent(res.data);
+        setEvent(res.event);
       }
     } catch (err) {}
   };
@@ -128,13 +134,13 @@ export default function SeatSelection() {
       {event && (
         <Card>
           <SectionTitle>{event.name}</SectionTitle>
-          {event.venue && <DetailText>Venue: {event.venue}</DetailText>}
           <DetailText>
             Date: {new Date(event.eventDate).toLocaleDateString()}
           </DetailText>
           <DetailText>
             Price per seat: ₹{(event.pricePerSeat / 100).toFixed(2)}
           </DetailText>
+          <DetailText>Status: {event.status}</DetailText>
         </Card>
       )}
 
@@ -142,15 +148,16 @@ export default function SeatSelection() {
         <SectionTitle>Select Seats</SectionTitle>
         <SeatGrid>
           {seats.map((seat) => {
-            const isAvailable = seat.status === "AVAILABLE";
-            const isSelected = selectedSeatIds.includes(seat.id);
+            const isAvailable =
+              seat.status === "AVAILABLE" && event.status !== "CANCELLED";
+            const isSelected = selectedSeatIds.includes(seat._id);
             return (
               <SeatButton
                 key={seat.id}
                 disabled={!isAvailable}
                 isSelected={isSelected}
                 isAvailable={isAvailable}
-                onClick={() => toggleSeat(seat.id)}
+                onClick={() => toggleSeat(seat._id)}
               >
                 {seat.seatNumber}
               </SeatButton>

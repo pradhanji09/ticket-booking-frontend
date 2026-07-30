@@ -1,7 +1,11 @@
 import httpService from "../../api/httpService";
 
-export const getAdminTransactions = (page = 1, limit = 20, currentFilters = {}) => {
-  let url = `/api/admin/transactions?page=${page}&limit=${limit}`;
+export const getAdminTransactions = (
+  page = 1,
+  limit = 20,
+  currentFilters = {},
+) => {
+  let url = `/api/wallet/admin/transactions?page=${page}&limit=${limit}`;
   if (currentFilters.userId)
     url += `&userId=${encodeURIComponent(currentFilters.userId)}`;
   if (currentFilters.type)

@@ -82,7 +82,7 @@ export default function Navbar() {
           ) : (
             <>
               <Link to="/events">Events</Link>
-              <Link to="/bookings">My Bookings</Link>
+              <Link to="/bookings">Bookings</Link>
               <Link to="/wallet">Wallet</Link>
             </>
           )}
