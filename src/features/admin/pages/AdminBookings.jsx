@@ -178,7 +178,8 @@ export default function AdminBookings() {
             <tbody>
               {bookings.map((b) => {
                 const userIdVal = b.user?._id || b.user?.id || b.userId || "";
-                const eventIdVal = b.event?._id || b.event?.id || b.eventId || "";
+                const eventIdVal =
+                  b.event?._id || b.event?.id || b.eventId || "";
                 return (
                   <tr key={b._id || b.id}>
                     <td

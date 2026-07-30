@@ -7,7 +7,6 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 import Login from "./features/auth/pages/Login";
 import Signup from "./features/auth/pages/Signup";
-import AdminLogin from "./features/auth/pages/AdminLogin";
 import Wallet from "./features/wallet/pages/Wallet";
 import Events from "./features/events/pages/Events";
 import SeatSelection from "./features/events/pages/SeatSelection";
@@ -36,7 +35,6 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
 
             <Route
               path="/events"
@@ -113,6 +111,7 @@ export default function App() {
             />
 
             <Route path="/" element={<RootRedirect />} />
+            <Route path="*" element={<RootRedirect />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
