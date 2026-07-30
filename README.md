@@ -1,4 +1,4 @@
-# ShowPass — Ticket Booking, Wallet & Admin System (Frontend)
+## ShowPass: Ticket Booking, Wallet & Admin System
 
 A high-performance Single Page Application (SPA) built with **React**, **Vite**, **styled-components**, **React Router v6**, and **Axios**. The frontend provides a seamless workflow for users to browse events, select seats on an interactive grid, hold temporary 5-minute seat reservations, and complete idempotent wallet payments. It also features a comprehensive Admin Dashboard for managing events, bulk seat creation, system-wide bookings, and transaction audit logs.
 
