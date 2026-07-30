@@ -7,27 +7,34 @@ import {
   Card,
   Select,
   Label,
+  Badge,
   FlexRow,
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.xs};
 `;
 
 const SubTitle = styled.h3`
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.textMuted};
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
+const SeatGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+`;
+
 const SeatCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius};
-  padding: ${({ theme }) => theme.spacing.sm};
-  min-width: 110px;
+  padding: 12px;
   background-color: ${({ status }) =>
     status === "AVAILABLE"
       ? "#f0fdf4"
@@ -38,12 +45,8 @@ const SeatCard = styled.div`
   strong {
     display: block;
     font-size: 13px;
-    margin-bottom: 2px;
-  }
-
-  span {
-    font-size: 12px;
-    color: ${({ theme }) => theme.colors.textMuted};
+    margin-bottom: 6px;
+    color: ${({ theme }) => theme.colors.text};
   }
 `;
 
@@ -69,23 +72,23 @@ export default function AdminSeatOverview() {
 
   return (
     <PageContainer>
-      <div style={{ marginBottom: "12px" }}>
+      <div style={{ marginBottom: "16px" }}>
         <Link
           to="/admin/events"
           style={{
-            textDecoration: "underline",
-            color: "#1a1a1a",
+            color: "#e23744",
+            fontWeight: 600,
             fontSize: "13px",
           }}
         >
-          &larr; Back to Events
+          &larr; Back to Events List
         </Link>
       </div>
 
       <PageTitle>Admin Seat Overview</PageTitle>
       {eventName && <SubTitle>Event: {eventName}</SubTitle>}
 
-      <FlexRow style={{ marginBottom: "16px" }}>
+      <FlexRow style={{ marginBottom: "20px" }}>
         <Label htmlFor="seatFilter" style={{ marginBottom: 0 }}>
           Filter Status:
         </Label>
@@ -94,7 +97,7 @@ export default function AdminSeatOverview() {
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
-          <option value="">All</option>
+          <option value="">All Statuses</option>
           <option value="AVAILABLE">AVAILABLE</option>
           <option value="RESERVED">RESERVED</option>
           <option value="BOOKED">BOOKED</option>
@@ -102,16 +105,18 @@ export default function AdminSeatOverview() {
       </FlexRow>
 
       {seats.length === 0 ? (
-        <Card>No seats found for this filter</Card>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+          <p style={{ color: "#64748b" }}>No seats match this status filter.</p>
+        </Card>
       ) : (
-        <FlexRow gap="10px">
+        <SeatGrid>
           {seats.map((seat, index) => (
             <SeatCard key={seat.id || index} status={seat.status}>
               <strong>Seat {seat.seatNumber}</strong>
-              <span>Status: {seat.status}</span>
+              <Badge status={seat.status}>{seat.status}</Badge>
             </SeatCard>
           ))}
-        </FlexRow>
+        </SeatGrid>
       )}
     </PageContainer>
   );

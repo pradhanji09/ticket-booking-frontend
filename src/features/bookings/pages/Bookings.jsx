@@ -4,22 +4,29 @@ import { getMyBookings } from "../api/bookingsService";
 import {
   PageContainer,
   Card,
+  TableWrapper,
   Table,
   Select,
   Label,
+  Badge,
   FlexRow,
   SecondaryButton,
   PaginationContainer,
 } from "../../../components/ui";
 
-const PageTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
+const HeaderSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
+  gap: 12px;
 `;
 
-const FilterGroup = styled(FlexRow)`
-  margin-bottom: ${({ theme }) => theme.spacing.md};
+const PageTitle = styled.h2`
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export default function Bookings() {
@@ -54,50 +61,60 @@ export default function Bookings() {
 
   return (
     <PageContainer>
-      <PageTitle>My Bookings</PageTitle>
+      <HeaderSection>
+        <PageTitle>My Bookings</PageTitle>
 
-      <FilterGroup>
-        <Label htmlFor="statusFilter" style={{ marginBottom: 0 }}>
-          Status Filter:
-        </Label>
-        <Select
-          id="statusFilter"
-          value={statusFilter}
-          onChange={handleFilterChange}
-        >
-          <option value="">All</option>
-          <option value="CONFIRMED">CONFIRMED</option>
-          <option value="CANCELLED">CANCELLED</option>
-        </Select>
-      </FilterGroup>
+        <FlexRow>
+          <Label htmlFor="statusFilter" style={{ marginBottom: 0 }}>
+            Filter:
+          </Label>
+          <Select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={handleFilterChange}
+          >
+            <option value="">All Statuses</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </Select>
+        </FlexRow>
+      </HeaderSection>
 
       {bookings.length === 0 ? (
-        <Card>No bookings yet</Card>
+        <Card style={{ textAlign: "center", padding: "40px 20px" }}>
+          <p style={{ color: "#64748b" }}>No bookings found.</p>
+        </Card>
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <th>Event Name</th>
-              <th>Seats</th>
-              <th>Seat Count</th>
-              <th>Amount (₹)</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((b) => (
-              <tr key={b.id || b._id}>
-                <td>{b.eventName}</td>
-                <td>{Array.isArray(b.seats) ? b.seats.join(", ") : b.seats}</td>
-                <td>{b.seatCount}</td>
-                <td>₹{(b.amount / 100).toFixed(2)}</td>
-                <td>{b.status}</td>
-                <td>{new Date(b.createdAt).toLocaleString()}</td>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <th>Event Name</th>
+                <th>Seats</th>
+                <th>Count</th>
+                <th>Amount (₹)</th>
+                <th>Status</th>
+                <th>Booking Date</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {bookings.map((b) => (
+                <tr key={b.id || b._id}>
+                  <td style={{ fontWeight: 600 }}>{b.eventName}</td>
+                  <td>{Array.isArray(b.seats) ? b.seats.join(", ") : b.seats}</td>
+                  <td>{b.seatCount}</td>
+                  <td style={{ fontWeight: 700, color: "#e23744" }}>
+                    ₹{(b.amount / 100).toFixed(2)}
+                  </td>
+                  <td>
+                    <Badge status={b.status}>{b.status}</Badge>
+                  </td>
+                  <td>{new Date(b.createdAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableWrapper>
       )}
 
       <PaginationContainer>

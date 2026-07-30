@@ -8,9 +8,12 @@ import {
 import {
   PageContainer,
   Card,
+  TableWrapper,
   Table,
   Input,
   Button,
+  OutlineButton,
+  Badge,
   ErrorText,
   SuccessText,
   FlexRow,
@@ -19,28 +22,43 @@ import {
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const BalanceCard = styled(Card)`
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 `;
 
-const BalanceAmount = styled.span`
-  font-size: 20px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
+const BalanceLabel = styled.span`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-weight: 500;
+`;
+
+const BalanceAmount = styled.div`
+  font-size: 28px;
+  font-weight: 800;
+  color: ${({ theme }) => theme.colors.primary};
+  letter-spacing: -0.5px;
+  margin-top: 4px;
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 15px;
-  font-weight: 600;
-  margin-top: ${({ theme }) => theme.spacing.md};
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: ${({ theme }) => theme.spacing.lg};
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export default function Wallet() {
@@ -112,7 +130,7 @@ export default function Wallet() {
           fetchBalance();
         }
         setAmount("");
-        setMessage("Money added successfully");
+        setMessage("Money added to wallet successfully");
         fetchTransactions(page);
       }
     } catch (err) {
@@ -120,67 +138,90 @@ export default function Wallet() {
     }
   };
 
+  const setQuickAmount = (val) => {
+    setAmount(val.toString());
+  };
+
   return (
     <PageContainer>
-      <PageTitle>Wallet</PageTitle>
+      <PageTitle>ShowPass Wallet</PageTitle>
 
       <BalanceCard>
         <div>
-          <span style={{ fontSize: "13px", color: "#666" }}>
-            Current Balance
-          </span>
-          <br />
+          <BalanceLabel>Available Balance</BalanceLabel>
           <BalanceAmount>₹{(balance / 100).toFixed(2)}</BalanceAmount>
         </div>
       </BalanceCard>
 
       <Card>
-        <SectionTitle style={{ marginTop: 0 }}>Add Money</SectionTitle>
+        <SectionTitle style={{ marginTop: 0 }}>Add Funds</SectionTitle>
         {message && <SuccessText>{message}</SuccessText>}
         {error && <ErrorText>{error}</ErrorText>}
+
         <form onSubmit={handleAddMoney}>
-          <FlexRow gap="8px">
+          <FlexRow gap="8px" style={{ marginBottom: "12px" }}>
             <Input
               type="number"
               step="any"
               min="1"
-              placeholder="Amount in ₹"
+              placeholder="Enter amount in ₹"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               required
-              style={{ maxWidth: "250px" }}
+              style={{ maxWidth: "260px" }}
             />
             <Button type="submit">Add Money</Button>
+          </FlexRow>
+
+          <FlexRow gap="8px">
+            <span style={{ fontSize: "12px", color: "#64748b" }}>Quick add:</span>
+            <OutlineButton type="button" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setQuickAmount(100)}>
+              +₹100
+            </OutlineButton>
+            <OutlineButton type="button" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setQuickAmount(500)}>
+              +₹500
+            </OutlineButton>
+            <OutlineButton type="button" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setQuickAmount(1000)}>
+              +₹1000
+            </OutlineButton>
           </FlexRow>
         </form>
       </Card>
 
-      <SectionTitle>Transactions</SectionTitle>
+      <SectionTitle>Transaction History</SectionTitle>
       {transactions.length === 0 ? (
-        <Card>No transactions found</Card>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+          <p style={{ color: "#64748b" }}>No transactions recorded yet.</p>
+        </Card>
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Amount (₹)</th>
-              <th>Reason</th>
-              <th>Balance After (₹)</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx) => (
-              <tr key={tx._id || tx.id}>
-                <td>{tx.type}</td>
-                <td>₹{(tx.amount / 100).toFixed(2)}</td>
-                <td>{tx.reason}</td>
-                <td>₹{((tx.balanceAfter ?? 0) / 100).toFixed(2)}</td>
-                <td>{new Date(tx.createdAt).toLocaleString()}</td>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount (₹)</th>
+                <th>Reason</th>
+                <th>Balance After</th>
+                <th>Date</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {transactions.map((tx) => (
+                <tr key={tx._id || tx.id}>
+                  <td>
+                    <Badge status={tx.type}>{tx.type}</Badge>
+                  </td>
+                  <td style={{ fontWeight: 700, color: tx.type === "CREDIT" ? "#16a34a" : "#dc2626" }}>
+                    {tx.type === "CREDIT" ? "+" : "-"}₹{(tx.amount / 100).toFixed(2)}
+                  </td>
+                  <td>{tx.reason}</td>
+                  <td>₹{((tx.balanceAfter ?? 0) / 100).toFixed(2)}</td>
+                  <td>{new Date(tx.createdAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableWrapper>
       )}
 
       <PaginationContainer>

@@ -11,6 +11,7 @@ import {
 import {
   PageContainer,
   Card,
+  TableWrapper,
   Table,
   Input,
   Label,
@@ -18,6 +19,7 @@ import {
   Button,
   DangerButton,
   SecondaryButton,
+  Badge,
   ErrorText,
   SuccessText,
   FlexRow,
@@ -25,21 +27,23 @@ import {
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
 const InfoText = styled.p`
-  color: #2c2c2c;
+  color: ${({ theme }) => theme.colors.primary};
   font-size: 13px;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  font-weight: 500;
 `;
 
 export default function AdminEvents() {
@@ -191,22 +195,23 @@ export default function AdminEvents() {
 
       {actionMessage && <InfoText>{actionMessage}</InfoText>}
 
-      <Card>
+      <Card style={{ marginBottom: "24px" }}>
         <SectionTitle>
-          {editingEventId ? "Edit Event" : "Create Event"}
+          {editingEventId ? "Edit Event Details" : "Create New Event"}
         </SectionTitle>
         {formMessage && <SuccessText>{formMessage}</SuccessText>}
         {formError && <ErrorText>{formError}</ErrorText>}
 
         <form onSubmit={handleSubmitForm}>
           <FormGroup>
-            <Label htmlFor="eventName">Name</Label>
+            <Label htmlFor="eventName">Event Name</Label>
             <Input
               id="eventName"
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
+              placeholder="e.g. Rock Concert 2026"
             />
           </FormGroup>
 
@@ -219,34 +224,38 @@ export default function AdminEvents() {
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
               }
+              placeholder="Event summary..."
             />
           </FormGroup>
 
-          <FormGroup>
-            <Label htmlFor="eventDate">Event Date</Label>
-            <Input
-              id="eventDate"
-              type="datetime-local"
-              value={form.eventDate}
-              onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
-              required
-            />
-          </FormGroup>
+          <FlexRow gap="16px" style={{ marginBottom: "16px" }}>
+            <div style={{ flex: 1 }}>
+              <Label htmlFor="eventDate">Event Date & Time</Label>
+              <Input
+                id="eventDate"
+                type="datetime-local"
+                value={form.eventDate}
+                onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
+                required
+              />
+            </div>
 
-          <FormGroup>
-            <Label htmlFor="eventPrice">Price per Seat (₹)</Label>
-            <Input
-              id="eventPrice"
-              type="number"
-              step="any"
-              min="0"
-              value={form.pricePerSeat}
-              onChange={(e) =>
-                setForm({ ...form, pricePerSeat: e.target.value })
-              }
-              required
-            />
-          </FormGroup>
+            <div style={{ flex: 1 }}>
+              <Label htmlFor="eventPrice">Price per Seat (₹)</Label>
+              <Input
+                id="eventPrice"
+                type="number"
+                step="any"
+                min="0"
+                value={form.pricePerSeat}
+                onChange={(e) =>
+                  setForm({ ...form, pricePerSeat: e.target.value })
+                }
+                required
+                placeholder="100"
+              />
+            </div>
+          </FlexRow>
 
           <FlexRow>
             <Button type="submit">
@@ -263,128 +272,133 @@ export default function AdminEvents() {
 
       <SectionTitle>Events List</SectionTitle>
       {events.length === 0 ? (
-        <Card>No events found</Card>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+          <p style={{ color: "#64748b" }}>No events found.</p>
+        </Card>
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Event Date</th>
-              <th>Price (₹)</th>
-              <th>Total Seats</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {events.map((event) => (
-              <tr key={event._id || event.id}>
-                <td>{event.name}</td>
-                <td>{new Date(event.eventDate).toLocaleString()}</td>
-                <td>₹{(event.pricePerSeat / 100).toFixed(2)}</td>
-                <td>{event.totalSeats}</td>
-                <td>{event.status}</td>
-                <td>
-                  <FlexRow gap="4px">
-                    <SecondaryButton
-                      style={{ padding: "4px 8px", fontSize: "12px" }}
-                      onClick={() => handleEditClick(event)}
-                    >
-                      Edit
-                    </SecondaryButton>
-                    <DangerButton
-                      style={{ padding: "4px 8px", fontSize: "12px" }}
-                      onClick={() => handleCancelEvent(event._id)}
-                    >
-                      Delete
-                    </DangerButton>
-                    <SecondaryButton
-                      style={{ padding: "4px 8px", fontSize: "12px" }}
-                      onClick={() =>
-                        setSeatFormEventId(
-                          seatFormEventId === event._id ? null : event._id,
-                        )
-                      }
-                    >
-                      Seats
-                    </SecondaryButton>
-                    <Link
-                      to={`/admin/events/${event._id}/seats`}
-                      style={{
-                        fontSize: "12px",
-                        color: "#1a1a1a",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Overview
-                    </Link>
-                  </FlexRow>
-
-                  {seatFormEventId === (event._id || event.id) && (
-                    <Card style={{ marginTop: "8px", padding: "8px" }}>
-                      <form
-                        onSubmit={(e) =>
-                          handleBulkCreateSeats(e, event._id || event.id)
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Event Date</th>
+                <th>Price (₹)</th>
+                <th>Total Seats</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map((event) => (
+                <tr key={event._id || event.id}>
+                  <td style={{ fontWeight: 600 }}>{event.name}</td>
+                  <td>{new Date(event.eventDate).toLocaleString()}</td>
+                  <td style={{ fontWeight: 700, color: "#e23744" }}>
+                    ₹{(event.pricePerSeat / 100).toFixed(2)}
+                  </td>
+                  <td>{event.totalSeats}</td>
+                  <td>
+                    <Badge status={event.status}>{event.status}</Badge>
+                  </td>
+                  <td>
+                    <FlexRow gap="6px">
+                      <SecondaryButton
+                        style={{ padding: "4px 8px", fontSize: "12px" }}
+                        onClick={() => handleEditClick(event)}
+                      >
+                        Edit
+                      </SecondaryButton>
+                      <DangerButton
+                        style={{ padding: "4px 8px", fontSize: "12px" }}
+                        onClick={() => handleCancelEvent(event._id)}
+                      >
+                        Delete
+                      </DangerButton>
+                      <SecondaryButton
+                        style={{ padding: "4px 8px", fontSize: "12px" }}
+                        onClick={() =>
+                          setSeatFormEventId(
+                            seatFormEventId === event._id ? null : event._id,
+                          )
                         }
                       >
-                        <FormGroup>
-                          <Label style={{ fontSize: "12px" }}>Seat Count</Label>
-                          <Input
-                            type="number"
-                            min="1"
-                            value={seatForm.count}
-                            onChange={(e) =>
-                              setSeatForm({
-                                ...seatForm,
-                                count: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label style={{ fontSize: "12px" }}>Prefix</Label>
-                          <Input
-                            type="text"
-                            value={seatForm.prefix}
-                            onChange={(e) =>
-                              setSeatForm({
-                                ...seatForm,
-                                prefix: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                        </FormGroup>
-                        <Button
-                          type="submit"
-                          style={{ padding: "4px 8px", fontSize: "12px" }}
-                        >
-                          Create
-                        </Button>
-                        <Button
-                          type="button"
-                          onClick={() =>
-                            setSeatFormEventId(
-                              seatFormEventId === event._id ? null : event._id,
-                            )
+                        Seats
+                      </SecondaryButton>
+                      <Link
+                        to={`/admin/events/${event._id}/seats`}
+                        style={{
+                          fontSize: "12px",
+                          color: "#e23744",
+                          fontWeight: 600,
+                          padding: "4px 6px",
+                        }}
+                      >
+                        Overview
+                      </Link>
+                    </FlexRow>
+
+                    {seatFormEventId === (event._id || event.id) && (
+                      <Card style={{ marginTop: "10px", padding: "12px", backgroundColor: "#f8fafc" }}>
+                        <form
+                          onSubmit={(e) =>
+                            handleBulkCreateSeats(e, event._id || event.id)
                           }
-                          style={{
-                            padding: "4px 8px",
-                            fontSize: "12px",
-                            marginLeft: "8px",
-                          }}
                         >
-                          Cancel
-                        </Button>
-                      </form>
-                    </Card>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+                          <FlexRow gap="8px" style={{ alignItems: "flex-end" }}>
+                            <div>
+                              <Label style={{ fontSize: "11px" }}>Count</Label>
+                              <Input
+                                type="number"
+                                min="1"
+                                value={seatForm.count}
+                                onChange={(e) =>
+                                  setSeatForm({
+                                    ...seatForm,
+                                    count: e.target.value,
+                                  })
+                                }
+                                required
+                                style={{ width: "80px", padding: "6px" }}
+                              />
+                            </div>
+                            <div>
+                              <Label style={{ fontSize: "11px" }}>Prefix</Label>
+                              <Input
+                                type="text"
+                                value={seatForm.prefix}
+                                onChange={(e) =>
+                                  setSeatForm({
+                                    ...seatForm,
+                                    prefix: e.target.value,
+                                  })
+                                }
+                                required
+                                style={{ width: "80px", padding: "6px" }}
+                              />
+                            </div>
+                            <Button
+                              type="submit"
+                              style={{ padding: "6px 12px", fontSize: "12px" }}
+                            >
+                              Create
+                            </Button>
+                            <SecondaryButton
+                              type="button"
+                              onClick={() => setSeatFormEventId(null)}
+                              style={{ padding: "6px 12px", fontSize: "12px" }}
+                            >
+                              Cancel
+                            </SecondaryButton>
+                          </FlexRow>
+                        </form>
+                      </Card>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableWrapper>
       )}
 
       <PaginationContainer>

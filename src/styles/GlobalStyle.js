@@ -7,6 +7,10 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     font-family: ${({ theme }) => theme.font};
     background-color: ${({ theme }) => theme.colors.background};
@@ -15,6 +19,20 @@ export const GlobalStyle = createGlobalStyle`
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.primaryHover};
+    }
+  }
+
+  button, input, select, textarea {
+    font-family: inherit;
   }
 `;
 

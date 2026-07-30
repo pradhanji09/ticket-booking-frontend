@@ -14,25 +14,43 @@ import {
 } from "../../../components/ui";
 
 const AuthWrapper = styled(PageContainer)`
-  max-width: 400px;
+  max-width: 420px;
   margin-top: 40px;
 `;
 
-const AuthHeader = styled.h2`
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  font-size: 18px;
-  font-weight: 600;
+const AuthHeader = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  text-align: center;
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: ${({ theme }) => theme.colors.text};
+  }
+
+  p {
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.textMuted};
+    margin-top: 4px;
+  }
+`;
+
+const BrandBadge = styled.span`
+  display: inline-block;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: ${({ theme }) => theme.radiusSm};
+  margin-bottom: 12px;
 `;
 
 const FooterText = styled.p`
   margin-top: ${({ theme }) => theme.spacing.md};
   font-size: 13px;
+  text-align: center;
   color: ${({ theme }) => theme.colors.textMuted};
-
-  a {
-    color: ${({ theme }) => theme.colors.text};
-    text-decoration: underline;
-  }
 `;
 
 export default function Signup() {
@@ -59,30 +77,36 @@ export default function Signup() {
 
   return (
     <AuthWrapper>
-      <Card>
-        <AuthHeader>Sign Up</AuthHeader>
+      <Card style={{ padding: "28px" }}>
+        <AuthHeader>
+          <BrandBadge>SHOWPASS</BrandBadge>
+          <h2>Create an Account</h2>
+          <p>Join ShowPass to reserve your event tickets instantly</p>
+        </AuthHeader>
+
         {error && <ErrorText>{error}</ErrorText>}
+
         <form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Enter your name"
+              placeholder="John Doe"
             />
           </FormGroup>
           <FormGroup>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email address</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Enter your email"
+              placeholder="name@example.com"
             />
           </FormGroup>
           <FormGroup>
@@ -93,15 +117,16 @@ export default function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Enter your password"
+              placeholder="••••••••"
             />
           </FormGroup>
-          <Button type="submit" style={{ width: "100%" }}>
-            Sign Up
+          <Button type="submit" style={{ width: "100%", marginTop: "8px" }}>
+            Create Account
           </Button>
         </form>
+
         <FooterText>
-          Already have an account? <Link to="/login">Login</Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </FooterText>
       </Card>
     </AuthWrapper>

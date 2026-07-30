@@ -4,19 +4,22 @@ import { getAdminTransactions } from "../api/adminTransactionsService";
 import {
   PageContainer,
   Card,
+  TableWrapper,
   Table,
   Input,
   Select,
   Label,
   Button,
   SecondaryButton,
+  Badge,
   FlexRow,
   PaginationContainer,
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
@@ -64,10 +67,10 @@ export default function AdminTransactions() {
     <PageContainer>
       <PageTitle>Admin Transactions Dashboard</PageTitle>
 
-      <Card>
+      <Card style={{ marginBottom: "20px" }}>
         <form onSubmit={handleApplyFilters}>
           <FlexRow gap="12px" style={{ alignItems: "flex-end" }}>
-            <div>
+            <div style={{ flex: 1, minWidth: "140px" }}>
               <Label htmlFor="txUserId">User ID</Label>
               <Input
                 id="txUserId"
@@ -77,26 +80,28 @@ export default function AdminTransactions() {
                 placeholder="User ID"
               />
             </div>
-            <div>
+            <div style={{ flex: 1, minWidth: "140px" }}>
               <Label htmlFor="txType">Type</Label>
               <Select
                 id="txType"
                 value={typeInput}
                 onChange={(e) => setTypeInput(e.target.value)}
+                style={{ width: "100%" }}
               >
-                <option value="">All</option>
+                <option value="">All Types</option>
                 <option value="CREDIT">CREDIT</option>
                 <option value="DEBIT">DEBIT</option>
               </Select>
             </div>
-            <div>
+            <div style={{ flex: 1, minWidth: "140px" }}>
               <Label htmlFor="txReason">Reason</Label>
               <Select
                 id="txReason"
                 value={reasonInput}
                 onChange={(e) => setReasonInput(e.target.value)}
+                style={{ width: "100%" }}
               >
-                <option value="">All</option>
+                <option value="">All Reasons</option>
                 <option value="TOPUP">TOPUP</option>
                 <option value="BOOKING">BOOKING</option>
                 <option value="REFUND">REFUND</option>
@@ -108,34 +113,42 @@ export default function AdminTransactions() {
       </Card>
 
       {transactions.length === 0 ? (
-        <Card>No transactions found</Card>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+          <p style={{ color: "#64748b" }}>No transactions found.</p>
+        </Card>
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <th>User Name</th>
-              <th>User Email</th>
-              <th>Type</th>
-              <th>Amount (₹)</th>
-              <th>Reason</th>
-              <th>Balance After (₹)</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx) => (
-              <tr key={tx.id || tx._id}>
-                <td>{tx.user?.name}</td>
-                <td>{tx.user?.email}</td>
-                <td>{tx.type}</td>
-                <td>₹{(tx.amount / 100).toFixed(2)}</td>
-                <td>{tx.reason}</td>
-                <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
-                <td>{new Date(tx.createdAt).toLocaleString()}</td>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>User Email</th>
+                <th>Type</th>
+                <th>Amount (₹)</th>
+                <th>Reason</th>
+                <th>Balance After (₹)</th>
+                <th>Date</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {transactions.map((tx) => (
+                <tr key={tx.id || tx._id}>
+                  <td style={{ fontWeight: 600 }}>{tx.user?.name}</td>
+                  <td>{tx.user?.email}</td>
+                  <td>
+                    <Badge status={tx.type}>{tx.type}</Badge>
+                  </td>
+                  <td style={{ fontWeight: 700, color: tx.type === "CREDIT" ? "#16a34a" : "#dc2626" }}>
+                    {tx.type === "CREDIT" ? "+" : "-"}₹{(tx.amount / 100).toFixed(2)}
+                  </td>
+                  <td>{tx.reason}</td>
+                  <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
+                  <td>{new Date(tx.createdAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableWrapper>
       )}
 
       <PaginationContainer>

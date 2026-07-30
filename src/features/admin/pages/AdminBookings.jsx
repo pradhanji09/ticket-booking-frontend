@@ -1,32 +1,26 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import {
-  getAdminBookings,
-  cancelAdminBookingApi,
-} from "../api/adminBookingsService";
+import { getAdminBookings } from "../api/adminBookingsService";
 import {
   PageContainer,
   Card,
+  TableWrapper,
   Table,
   Input,
   Select,
   Label,
   Button,
   SecondaryButton,
+  Badge,
   FlexRow,
   PaginationContainer,
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const InfoText = styled.p`
-  color: #2c2c2c;
-  font-size: 13px;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
 export default function AdminBookings() {
@@ -48,7 +42,6 @@ export default function AdminBookings() {
     eventId: "",
     status: "",
   });
-  const [actionMessage, setActionMessage] = useState("");
 
   const fetchBookings = async (p, currentFilters) => {
     try {
@@ -87,12 +80,10 @@ export default function AdminBookings() {
     <PageContainer>
       <PageTitle>Admin Booking Dashboard</PageTitle>
 
-      {actionMessage && <InfoText>{actionMessage}</InfoText>}
-
-      <Card>
+      <Card style={{ marginBottom: "20px" }}>
         <form onSubmit={handleApplyFilters}>
           <FlexRow gap="12px" style={{ alignItems: "flex-end" }}>
-            <div>
+            <div style={{ flex: 1, minWidth: "140px" }}>
               <Label htmlFor="userIdInput">User ID</Label>
               <Input
                 id="userIdInput"
@@ -102,7 +93,7 @@ export default function AdminBookings() {
                 placeholder="User ID"
               />
             </div>
-            <div>
+            <div style={{ flex: 1, minWidth: "140px" }}>
               <Label htmlFor="eventIdInput">Event ID</Label>
               <Input
                 id="eventIdInput"
@@ -112,14 +103,15 @@ export default function AdminBookings() {
                 placeholder="Event ID"
               />
             </div>
-            <div>
+            <div style={{ flex: 1, minWidth: "140px" }}>
               <Label htmlFor="statusInput">Status</Label>
               <Select
                 id="statusInput"
                 value={statusInput}
                 onChange={(e) => setStatusInput(e.target.value)}
+                style={{ width: "100%" }}
               >
-                <option value="">All</option>
+                <option value="">All Statuses</option>
                 <option value="CONFIRMED">CONFIRMED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </Select>
@@ -130,36 +122,46 @@ export default function AdminBookings() {
       </Card>
 
       {bookings?.length === 0 ? (
-        <Card>No bookings found</Card>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+          <p style={{ color: "#64748b" }}>No bookings found.</p>
+        </Card>
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <th>User Id</th>
-              <th>User Name</th>
-              <th>User Email</th>
-              <th>Event Name</th>
-              <th>Seat Count</th>
-              <th>Amount (₹)</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((b) => (
-              <tr key={b._id || b.id}>
-                <td>{b.user?._id || b.user?.id || b.userId}</td>
-                <td>{b.user?.name}</td>
-                <td>{b.user?.email}</td>
-                <td>{b.event?.name || b.eventName}</td>
-                <td>{b.seatCount}</td>
-                <td>₹{(b.amount / 100).toFixed(2)}</td>
-                <td>{b.status}</td>
-                <td>{new Date(b.createdAt).toLocaleString()}</td>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>User Name</th>
+                <th>User Email</th>
+                <th>Event Name</th>
+                <th>Seat Count</th>
+                <th>Amount (₹)</th>
+                <th>Status</th>
+                <th>Date</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {bookings.map((b) => (
+                <tr key={b._id || b.id}>
+                  <td style={{ fontSize: "11px", fontFamily: "monospace", color: "#64748b" }}>
+                    {(b.user?._id || b.user?.id || b.userId)?.slice(0, 10)}...
+                  </td>
+                  <td style={{ fontWeight: 600 }}>{b.user?.name}</td>
+                  <td>{b.user?.email}</td>
+                  <td>{b.event?.name || b.eventName}</td>
+                  <td>{b.seatCount}</td>
+                  <td style={{ fontWeight: 700, color: "#e23744" }}>
+                    ₹{(b.amount / 100).toFixed(2)}
+                  </td>
+                  <td>
+                    <Badge status={b.status}>{b.status}</Badge>
+                  </td>
+                  <td>{new Date(b.createdAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableWrapper>
       )}
 
       <PaginationContainer>
