@@ -123,7 +123,7 @@ export default function AdminBookings() {
                 type="text"
                 value={userIdInput}
                 onChange={(e) => setUserIdInput(e.target.value)}
-                placeholder="Paste User ID"
+                placeholder="User ID"
               />
             </div>
             <div style={{ flex: 1, minWidth: "140px" }}>
@@ -165,7 +165,9 @@ export default function AdminBookings() {
               <tr>
                 <th>User ID</th>
                 <th>User Name</th>
+                <th>User Email</th>
                 <th>Event Name</th>
+                <th>Event ID</th>
                 <th>Seats</th>
                 <th>Amount (₹)</th>
                 <th>Status</th>
@@ -176,6 +178,7 @@ export default function AdminBookings() {
             <tbody>
               {bookings.map((b) => {
                 const userIdVal = b.user?._id || b.user?.id || b.userId || "";
+                const eventIdVal = b.event?._id || b.event?.id || b.eventId || "";
                 return (
                   <tr key={b._id || b.id}>
                     <td
@@ -188,7 +191,17 @@ export default function AdminBookings() {
                       {userIdVal}
                     </td>
                     <td style={{ fontWeight: 600 }}>{b.user?.name || "N/A"}</td>
+                    <td>{b.user?.email || "N/A"}</td>
                     <td>{b.event?.name || b.eventName}</td>
+                    <td
+                      style={{
+                        fontSize: "12px",
+                        fontFamily: "monospace",
+                        userSelect: "all",
+                      }}
+                    >
+                      {eventIdVal}
+                    </td>
                     <td>{b.seatCount}</td>
                     <td style={{ fontWeight: 600 }}>
                       ₹{(b.amount / 100).toFixed(2)}

@@ -27,7 +27,7 @@ export default function AdminTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 20,
+    limit: 10,
     total: 0,
     totalPages: 1,
   });
@@ -41,7 +41,7 @@ export default function AdminTransactions() {
 
   const fetchTransactions = async (p, currentFilters) => {
     try {
-      const res = await getAdminTransactions(p, 20, currentFilters);
+      const res = await getAdminTransactions(p, 10, currentFilters);
       if (res.success) {
         setTransactions(res.data.transactions);
         setPagination(res.data.pagination);
@@ -121,7 +121,9 @@ export default function AdminTransactions() {
           <Table>
             <thead>
               <tr>
+                <th>User ID</th>
                 <th>User Name</th>
+                <th>User Email</th>
                 <th>Type</th>
                 <th>Amount (₹)</th>
                 <th>Reason</th>
@@ -130,26 +132,42 @@ export default function AdminTransactions() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((tx) => (
-                <tr key={tx.id || tx._id}>
-                  <td style={{ fontWeight: 600 }}>{tx.user?.name || "N/A"}</td>
-                  <td>
-                    <Badge status={tx.type}>{tx.type}</Badge>
-                  </td>
-                  <td
-                    style={{
-                      fontWeight: 600,
-                      color: tx.type === "CREDIT" ? "#15803d" : "#18181b",
-                    }}
-                  >
-                    {tx.type === "CREDIT" ? "+" : "-"}₹
-                    {(tx.amount / 100).toFixed(2)}
-                  </td>
-                  <td>{tx.reason}</td>
-                  <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
-                  <td>{new Date(tx.createdAt).toLocaleString()}</td>
-                </tr>
-              ))}
+              {transactions.map((tx) => {
+                const userIdVal =
+                  tx.user?._id || tx.user?.id || tx.userId || "";
+                return (
+                  <tr key={tx.id || tx._id}>
+                    <td
+                      style={{
+                        fontSize: "12px",
+                        fontFamily: "monospace",
+                        userSelect: "all",
+                      }}
+                    >
+                      {userIdVal}
+                    </td>
+                    <td style={{ fontWeight: 600 }}>
+                      {tx.user?.name || "N/A"}
+                    </td>
+                    <td>{tx.user?.email || "N/A"}</td>
+                    <td>
+                      <Badge status={tx.type}>{tx.type}</Badge>
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: 600,
+                        color: tx.type === "CREDIT" ? "#15803d" : "#18181b",
+                      }}
+                    >
+                      {tx.type === "CREDIT" ? "+" : "-"}₹
+                      {(tx.amount / 100).toFixed(2)}
+                    </td>
+                    <td>{tx.reason}</td>
+                    <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
+                    <td>{new Date(tx.createdAt).toLocaleString()}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         </TableWrapper>
