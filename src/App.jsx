@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import AdminLogin from "./pages/AdminLogin";
 import Wallet from "./pages/Wallet";
+import Events from "./pages/Events";
+import SeatSelection from "./pages/SeatSelection";
 
 export default function App() {
   return (
@@ -20,7 +22,15 @@ export default function App() {
             path="/events"
             element={
               <ProtectedRoute>
-                <h2>Events</h2>
+                <Events />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events/:id"
+            element={
+              <ProtectedRoute>
+                <SeatSelection />
               </ProtectedRoute>
             }
           />
