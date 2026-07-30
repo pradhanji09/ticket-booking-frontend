@@ -12,14 +12,14 @@ import {
 } from "../../../components/ui";
 
 const TicketCard = styled(Card)`
-  max-width: 480px;
+  max-width: 500px;
   margin: 20px auto;
-  padding: 28px;
+  padding: 24px;
   border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const PageTitle = styled.h2`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: 16px;
@@ -29,29 +29,35 @@ const PageTitle = styled.h2`
 const TicketRow = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px dashed ${({ theme }) => theme.colors.border};
-  font-size: 14px;
+  font-size: 13px;
+  gap: 12px;
 
   span:first-child {
     color: ${({ theme }) => theme.colors.textMuted};
+    white-space: nowrap;
   }
 
   span:last-child {
     font-weight: 600;
     color: ${({ theme }) => theme.colors.text};
+    word-break: break-all;
+    text-align: right;
   }
 `;
 
 const TimerBox = styled.div`
-  background-color: ${({ theme }) => theme.colors.primaryLight};
-  color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.surfaceAlt};
+  color: ${({ theme }) => theme.colors.text};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius};
-  padding: 12px;
+  padding: 10px;
   text-align: center;
-  font-size: 15px;
-  font-weight: 700;
-  margin: 20px 0;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0;
 `;
 
 export default function BookingConfirm() {
@@ -105,7 +111,7 @@ export default function BookingConfirm() {
             CONFIRMED
           </Badge>
           <PageTitle>Reservation Confirmed</PageTitle>
-          <p style={{ color: "#64748b", marginBottom: "20px" }}>
+          <p style={{ color: "#71717a", marginBottom: "20px" }}>
             This reservation has already been confirmed and paid.
           </p>
           <Link to="/bookings">
@@ -120,7 +126,7 @@ export default function BookingConfirm() {
     return (
       <PageContainer>
         <TicketCard style={{ textAlign: "center" }}>
-          <p style={{ color: "#64748b", marginBottom: "20px" }}>
+          <p style={{ color: "#71717a", marginBottom: "20px" }}>
             No active reservation found.
           </p>
           <Link to="/events">
@@ -166,21 +172,21 @@ export default function BookingConfirm() {
         <PageTitle>Confirm Reservation</PageTitle>
 
         <TicketRow>
-          <span>Reservation Group</span>
+          <span>Reservation Group ID</span>
           <span style={{ fontSize: "12px", fontFamily: "monospace" }}>
-            {reservationGroupId?.slice(0, 12)}...
+            {reservationGroupId}
           </span>
         </TicketRow>
 
         <TicketRow>
           <span>Amount Due</span>
-          <span style={{ fontSize: "18px", color: "#e23744" }}>
+          <span style={{ fontSize: "16px", fontWeight: 700 }}>
             ₹{(amount / 100).toFixed(2)}
           </span>
         </TicketRow>
 
         {remainingSeconds > 0 ? (
-          <TimerBox>⏱ Reservation expires in {formatTime(remainingSeconds)}</TimerBox>
+          <TimerBox>Reservation expires in {formatTime(remainingSeconds)}</TimerBox>
         ) : (
           <ErrorText style={{ textAlign: "center", margin: "16px 0" }}>
             Reservation has expired
@@ -191,7 +197,7 @@ export default function BookingConfirm() {
 
         {errorCode === 402 && (
           <FormGroup style={{ textAlign: "center", marginTop: "12px" }}>
-            <Link to="/wallet" style={{ color: "#e23744", fontWeight: 600 }}>
+            <Link to="/wallet" style={{ color: "#991b1b", fontWeight: 600 }}>
               Insufficient Funds — Top Up Wallet
             </Link>
           </FormGroup>
@@ -199,7 +205,7 @@ export default function BookingConfirm() {
 
         {(errorCode === 410 || errorCode === 409 || remainingSeconds <= 0) && (
           <FormGroup style={{ textAlign: "center", marginTop: "12px" }}>
-            <Link to="/events" style={{ color: "#64748b" }}>
+            <Link to="/events" style={{ color: "#71717a" }}>
               Return to Events Catalog
             </Link>
           </FormGroup>
@@ -210,7 +216,7 @@ export default function BookingConfirm() {
           disabled={remainingSeconds <= 0 || isSubmitting}
           onClick={handleConfirm}
         >
-          {isSubmitting ? "Processing Payment..." : "Confirm & Pay Now"}
+          {isSubmitting ? "Processing Payment..." : "Confirm & Pay"}
         </Button>
       </TicketCard>
     </PageContainer>

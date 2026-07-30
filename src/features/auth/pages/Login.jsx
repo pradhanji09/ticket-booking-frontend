@@ -94,7 +94,6 @@ export default function Login() {
         <AuthHeader>
           <BrandBadge>SHOWPASS</BrandBadge>
           <h2>Welcome Back</h2>
-          <p>Login to book tickets for your favorite events</p>
         </AuthHeader>
 
         {error && <ErrorText>{error}</ErrorText>}

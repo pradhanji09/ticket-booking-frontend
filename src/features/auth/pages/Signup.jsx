@@ -81,7 +81,6 @@ export default function Signup() {
         <AuthHeader>
           <BrandBadge>SHOWPASS</BrandBadge>
           <h2>Create an Account</h2>
-          <p>Join ShowPass to reserve your event tickets instantly</p>
         </AuthHeader>
 
         {error && <ErrorText>{error}</ErrorText>}

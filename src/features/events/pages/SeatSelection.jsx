@@ -15,32 +15,11 @@ import {
   FlexRow,
 } from "../../../components/ui";
 
-const ScreenBar = styled.div`
-  background: linear-gradient(180deg, #e2878f 0%, #cbd5e1 100%);
-  height: 8px;
-  border-radius: 4px;
-  margin: 16px auto 24px auto;
-  max-width: 80%;
-  box-shadow: 0 4px 12px rgba(226, 55, 68, 0.15);
-  position: relative;
-
-  &::after {
-    content: "SCREEN THIS WAY";
-    display: block;
-    text-align: center;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: ${({ theme }) => theme.colors.textMuted};
-    margin-top: 12px;
-  }
-`;
-
 const LegendContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 `;
 
@@ -48,14 +27,14 @@ const LegendItem = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
   color: ${({ theme }) => theme.colors.textMuted};
 `;
 
 const LegendDot = styled.div`
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
   border: 1px solid
     ${({ type, theme }) =>
       type === "selected"
@@ -79,7 +58,7 @@ const SeatGrid = styled.div`
 `;
 
 const SeatButton = styled.button`
-  height: 40px;
+  height: 38px;
   border-radius: ${({ theme }) => theme.radiusSm};
   font-size: 12px;
   font-weight: 600;
@@ -109,7 +88,6 @@ const SeatButton = styled.button`
 
   &:hover:not(:disabled) {
     border-color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-1px);
   }
 `;
 
@@ -185,20 +163,18 @@ export default function SeatSelection() {
       {error && <ErrorText>{error}</ErrorText>}
 
       {event && (
-        <Card style={{ marginBottom: "20px" }}>
-          <FlexRow style={{ justifyContent: "space-between", marginBottom: "8px" }}>
+        <Card style={{ marginBottom: "16px" }}>
+          <FlexRow style={{ justifyContent: "space-between", marginBottom: "6px" }}>
             <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{event.name}</h2>
             <Badge status={event.status}>{event.status}</Badge>
           </FlexRow>
-          <p style={{ fontSize: "13px", color: "#64748b" }}>
+          <p style={{ fontSize: "13px", color: "#71717a" }}>
             Date: {new Date(event.eventDate).toLocaleDateString()} | Price: ₹{(event.pricePerSeat / 100).toFixed(2)} / seat
           </p>
         </Card>
       )}
 
       <Card>
-        <ScreenBar />
-
         <LegendContainer>
           <LegendItem>
             <LegendDot type="available" />
@@ -235,8 +211,8 @@ export default function SeatSelection() {
 
         <SummaryBar>
           <div>
-            <span style={{ fontSize: "12px", color: "#64748b" }}>Total Price</span>
-            <div style={{ fontSize: "20px", fontWeight: 800, color: "#e23744" }}>
+            <span style={{ fontSize: "12px", color: "#71717a" }}>Total Amount</span>
+            <div style={{ fontSize: "18px", fontWeight: 700, color: "#18181b" }}>
               ₹{(totalPrice / 100).toFixed(2)}
             </div>
           </div>

@@ -14,16 +14,9 @@ import {
 
 const HeaderSection = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-const PageTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
-  letter-spacing: -0.3px;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const EventCard = styled(Card)`
@@ -31,15 +24,8 @@ const EventCard = styled(Card)`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 20px;
+  padding: 18px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadowMd};
-    border-color: ${({ theme }) => theme.colors.borderDark};
-  }
 `;
 
 const EventHeader = styled.div`
@@ -47,7 +33,7 @@ const EventHeader = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 `;
 
 const EventTitle = styled.h3`
@@ -60,7 +46,7 @@ const EventTitle = styled.h3`
 const EventDescription = styled.p`
   font-size: 13px;
   color: ${({ theme }) => theme.colors.textMuted};
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   line-height: 1.4;
 `;
 
@@ -70,7 +56,7 @@ const EventMeta = styled.div`
   gap: 6px;
   padding-top: 12px;
   border-top: 1px solid ${({ theme }) => theme.colors.border};
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   font-size: 13px;
 `;
 
@@ -86,9 +72,9 @@ const MetaRow = styled.div`
 `;
 
 const PriceTag = styled.span`
-  font-size: 18px;
-  font-weight: 800;
-  color: ${({ theme }) => theme.colors.primary};
+  font-size: 16px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export default function Events() {
@@ -126,13 +112,12 @@ export default function Events() {
   return (
     <PageContainer>
       <HeaderSection>
-        <PageTitle>Upcoming Events</PageTitle>
-        <Badge status="ACTIVE">{pagination.total || events.length} Available</Badge>
+        <Badge status="ACTIVE">{pagination.total || events.length} Events Available</Badge>
       </HeaderSection>
 
       {events.length === 0 ? (
-        <Card style={{ textAlign: "center", padding: "40px 20px" }}>
-          <p style={{ color: "#64748b" }}>No events found right now.</p>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+          <p style={{ color: "#71717a" }}>No events available right now.</p>
         </Card>
       ) : (
         <GridContainer>
@@ -168,7 +153,7 @@ export default function Events() {
 
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "12px" }}>
-                  <span style={{ fontSize: "12px", color: "#64748b" }}>Price per seat</span>
+                  <span style={{ fontSize: "12px", color: "#71717a" }}>Price per seat</span>
                   <PriceTag>₹{event.pricePerSeat}</PriceTag>
                 </div>
 

@@ -12,7 +12,6 @@ import {
   Table,
   Input,
   Button,
-  OutlineButton,
   Badge,
   ErrorText,
   SuccessText,
@@ -22,16 +21,16 @@ import {
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const BalanceCard = styled(Card)`
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  padding: 24px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,15 +45,15 @@ const BalanceLabel = styled.span`
 `;
 
 const BalanceAmount = styled.div`
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text};
   letter-spacing: -0.5px;
-  margin-top: 4px;
+  margin-top: 2px;
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   margin-top: ${({ theme }) => theme.spacing.lg};
   margin-bottom: ${({ theme }) => theme.spacing.sm};
@@ -138,13 +137,9 @@ export default function Wallet() {
     }
   };
 
-  const setQuickAmount = (val) => {
-    setAmount(val.toString());
-  };
-
   return (
     <PageContainer>
-      <PageTitle>ShowPass Wallet</PageTitle>
+      <PageTitle>Wallet</PageTitle>
 
       <BalanceCard>
         <div>
@@ -159,7 +154,7 @@ export default function Wallet() {
         {error && <ErrorText>{error}</ErrorText>}
 
         <form onSubmit={handleAddMoney}>
-          <FlexRow gap="8px" style={{ marginBottom: "12px" }}>
+          <FlexRow gap="8px">
             <Input
               type="number"
               step="any"
@@ -172,26 +167,13 @@ export default function Wallet() {
             />
             <Button type="submit">Add Money</Button>
           </FlexRow>
-
-          <FlexRow gap="8px">
-            <span style={{ fontSize: "12px", color: "#64748b" }}>Quick add:</span>
-            <OutlineButton type="button" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setQuickAmount(100)}>
-              +₹100
-            </OutlineButton>
-            <OutlineButton type="button" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setQuickAmount(500)}>
-              +₹500
-            </OutlineButton>
-            <OutlineButton type="button" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setQuickAmount(1000)}>
-              +₹1000
-            </OutlineButton>
-          </FlexRow>
         </form>
       </Card>
 
       <SectionTitle>Transaction History</SectionTitle>
       {transactions.length === 0 ? (
         <Card style={{ textAlign: "center", padding: "30px 20px" }}>
-          <p style={{ color: "#64748b" }}>No transactions recorded yet.</p>
+          <p style={{ color: "#71717a" }}>No transactions recorded yet.</p>
         </Card>
       ) : (
         <TableWrapper>
@@ -211,7 +193,7 @@ export default function Wallet() {
                   <td>
                     <Badge status={tx.type}>{tx.type}</Badge>
                   </td>
-                  <td style={{ fontWeight: 700, color: tx.type === "CREDIT" ? "#16a34a" : "#dc2626" }}>
+                  <td style={{ fontWeight: 600, color: tx.type === "CREDIT" ? "#15803d" : "#18181b" }}>
                     {tx.type === "CREDIT" ? "+" : "-"}₹{(tx.amount / 100).toFixed(2)}
                   </td>
                   <td>{tx.reason}</td>

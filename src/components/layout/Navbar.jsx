@@ -9,7 +9,6 @@ const NavHeader = styled.header`
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: ${({ theme }) => theme.shadowSm};
 `;
 
 const NavContainer = styled.div`
@@ -37,17 +36,16 @@ const LogoIcon = styled.span`
   background-color: ${({ theme }) => theme.colors.primary};
   color: #ffffff;
   font-weight: 800;
-  font-size: 14px;
-  padding: 4px 8px;
+  font-size: 13px;
+  padding: 3px 7px;
   border-radius: ${({ theme }) => theme.radiusSm};
-  letter-spacing: -0.5px;
+  letter-spacing: 0.5px;
 `;
 
 const BrandTitle = styled.span`
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   color: ${({ theme }) => theme.colors.text};
-  letter-spacing: -0.3px;
 `;
 
 const NavRight = styled.div`
@@ -59,10 +57,10 @@ const NavRight = styled.div`
 const NavLinks = styled.nav`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 
   @media (min-width: 640px) {
-    gap: 16px;
+    gap: 12px;
   }
 `;
 
