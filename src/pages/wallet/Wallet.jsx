@@ -61,8 +61,9 @@ export default function Wallet() {
   const fetchBalance = async () => {
     try {
       const res = await getBalance();
-      if (res.success) {
-        setBalance(res.data.balance);
+      if (res?.success || res?.balance !== undefined || res?.data?.balance !== undefined) {
+        const bal = res.balance ?? res.data?.balance ?? 0;
+        setBalance(bal);
       }
     } catch (err) {}
   };
@@ -70,9 +71,18 @@ export default function Wallet() {
   const fetchTransactions = async (p) => {
     try {
       const res = await getWalletTransactions(p, 20);
-      if (res.success) {
-        setTransactions(res.data.transactions);
-        setPagination(res.data.pagination);
+      if (res?.success || res?.transactions || res?.data?.transactions) {
+        const txList = res.transactions ?? res.data?.transactions ?? [];
+        const pag = res.pagination ?? res.data?.pagination;
+        setTransactions(txList);
+        if (pag) {
+          setPagination({
+            page: Number(pag.page),
+            limit: Number(pag.limit),
+            total: Number(pag.total),
+            totalPages: Number(pag.totalPages),
+          });
+        }
       }
     } catch (err) {}
   };
@@ -94,8 +104,13 @@ export default function Wallet() {
 
     try {
       const res = await creditWallet(paise, idempotencyKey);
-      if (res.success) {
-        setBalance(res.data.balanceAfter);
+      if (res?.success || res?.balanceAfter !== undefined || res?.data?.balanceAfter !== undefined) {
+        const newBal = res.balanceAfter ?? res.balance ?? res.data?.balanceAfter ?? res.data?.balance;
+        if (newBal !== undefined) {
+          setBalance(newBal);
+        } else {
+          fetchBalance();
+        }
         setAmount("");
         setMessage("Money added successfully");
         fetchTransactions(page);
@@ -156,11 +171,11 @@ export default function Wallet() {
           </thead>
           <tbody>
             {transactions.map((tx) => (
-              <tr key={tx.id}>
+              <tr key={tx._id || tx.id}>
                 <td>{tx.type}</td>
                 <td>₹{(tx.amount / 100).toFixed(2)}</td>
                 <td>{tx.reason}</td>
-                <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
+                <td>₹{((tx.balanceAfter ?? 0) / 100).toFixed(2)}</td>
                 <td>{new Date(tx.createdAt).toLocaleString()}</td>
               </tr>
             ))}

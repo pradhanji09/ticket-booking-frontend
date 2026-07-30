@@ -68,6 +68,26 @@ export default function BookingConfirm() {
     return () => clearInterval(interval);
   }, [expiresAt]);
 
+  const [isAlreadyConfirmed, setIsAlreadyConfirmed] = useState(() => {
+    return sessionStorage.getItem(`confirmed_${reservationGroupId}`) === "true";
+  });
+
+  if (isAlreadyConfirmed) {
+    return (
+      <PageContainer>
+        <Card>
+          <DetailText>This reservation has already been confirmed.</DetailText>
+          <Link
+            to="/bookings"
+            style={{ textDecoration: "underline", color: "#1a1a1a" }}
+          >
+            View My Bookings
+          </Link>
+        </Card>
+      </PageContainer>
+    );
+  }
+
   if (!amount || !expiresAt) {
     return (
       <PageContainer>
@@ -100,7 +120,9 @@ export default function BookingConfirm() {
     try {
       const res = await confirmBookingApi(reservationGroupId, idempotencyKey);
       if (res.success) {
-        navigate("/bookings");
+        sessionStorage.setItem(`confirmed_${reservationGroupId}`, "true");
+        setIsAlreadyConfirmed(true);
+        navigate("/bookings", { replace: true });
       }
     } catch (err) {
       const status = err.status;

@@ -296,7 +296,7 @@ export default function AdminEvents() {
                       style={{ padding: "4px 8px", fontSize: "12px" }}
                       onClick={() => handleCancelEvent(event._id)}
                     >
-                      Cancel
+                      Delete
                     </DangerButton>
                     <SecondaryButton
                       style={{ padding: "4px 8px", fontSize: "12px" }}
@@ -360,7 +360,22 @@ export default function AdminEvents() {
                           type="submit"
                           style={{ padding: "4px 8px", fontSize: "12px" }}
                         >
-                          Create Seats
+                          Create
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() =>
+                            setSeatFormEventId(
+                              seatFormEventId === event._id ? null : event._id,
+                            )
+                          }
+                          style={{
+                            padding: "4px 8px",
+                            fontSize: "12px",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          Cancel
                         </Button>
                       </form>
                     </Card>

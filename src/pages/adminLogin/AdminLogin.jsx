@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { adminLoginApi } from "./adminLoginService";
@@ -39,8 +39,14 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.role === "ADMIN") {
+      navigate("/admin/events", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +55,7 @@ export default function AdminLogin() {
       const res = await adminLoginApi(email, password);
       if (res.success) {
         login(res.token);
-        navigate("/admin/events");
+        navigate("/admin/events", { replace: true });
       }
     } catch (err) {
       setError(err.error || err.message || "Admin login failed");

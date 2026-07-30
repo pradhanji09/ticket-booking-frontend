@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { loginApi } from "./loginService";
@@ -39,8 +39,18 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN") {
+        navigate("/admin/events", { replace: true });
+      } else {
+        navigate("/events", { replace: true });
+      }
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,8 +58,12 @@ export default function Login() {
     try {
       const res = await loginApi(email, password);
       if (res.success) {
-        login(res.token);
-        navigate("/events");
+        const userData = login(res.token);
+        if (userData?.role === "ADMIN") {
+          navigate("/admin/events", { replace: true });
+        } else {
+          navigate("/events", { replace: true });
+        }
       }
     } catch (err) {
       setError(err.error || err.message || "Login failed");

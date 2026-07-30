@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import theme from "./styles/theme";
 import GlobalStyle from "./styles/GlobalStyle";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -18,6 +18,13 @@ import AdminSeatOverview from "./pages/adminSeatOverview/AdminSeatOverview";
 import AdminBookings from "./pages/adminBookings/AdminBookings";
 import AdminTransactions from "./pages/adminTransactions/AdminTransactions";
 import Navbar from "./components/Navbar";
+
+function RootRedirect() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role === "ADMIN") return <Navigate to="/admin/events" replace />;
+  return <Navigate to="/events" replace />;
+}
 
 export default function App() {
   return (
@@ -105,7 +112,7 @@ export default function App() {
               }
             />
 
-            <Route path="/" element={<Navigate to="/events" replace />} />
+            <Route path="/" element={<RootRedirect />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
