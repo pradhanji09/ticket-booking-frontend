@@ -11,6 +11,7 @@ import SeatSelection from "./pages/SeatSelection";
 import BookingConfirm from "./pages/BookingConfirm";
 import Bookings from "./pages/Bookings";
 import AdminEvents from "./pages/AdminEvents";
+import AdminSeatOverview from "./pages/AdminSeatOverview";
 
 export default function App() {
   return (
@@ -67,6 +68,14 @@ export default function App() {
             element={
               <AdminRoute>
                 <AdminEvents />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/events/:id/seats"
+            element={
+              <AdminRoute>
+                <AdminSeatOverview />
               </AdminRoute>
             }
           />
