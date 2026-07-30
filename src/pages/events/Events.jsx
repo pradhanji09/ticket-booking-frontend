@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/axios";
+import { getEvents } from "./eventsService";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -15,10 +15,10 @@ export default function Events() {
 
   const fetchEvents = async (p) => {
     try {
-      const res = await API.get(`/api/events?page=${p}&limit=10`);
-      if (res.data.success) {
-        setEvents(res.data.data.events);
-        setPagination(res.data.data.pagination);
+      const res = await getEvents(p, 10);
+      if (res.success) {
+        setEvents(res.data.events);
+        setPagination(res.data.pagination);
       }
     } catch (err) {}
   };

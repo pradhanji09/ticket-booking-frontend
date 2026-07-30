@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import API from "../api/axios";
+import { getBalance, creditWallet, getWalletTransactions } from "./walletService";
 
 export default function Wallet() {
   const [balance, setBalance] = useState(0);
@@ -18,19 +18,19 @@ export default function Wallet() {
 
   const fetchBalance = async () => {
     try {
-      const res = await API.get("/api/wallet/balance");
-      if (res.data.success) {
-        setBalance(res.data.data.balance);
+      const res = await getBalance();
+      if (res.success) {
+        setBalance(res.data.balance);
       }
     } catch (err) {}
   };
 
   const fetchTransactions = async (p) => {
     try {
-      const res = await API.get(`/api/wallet/transactions?page=${p}&limit=20`);
-      if (res.data.success) {
-        setTransactions(res.data.data.transactions);
-        setPagination(res.data.data.pagination);
+      const res = await getWalletTransactions(p, 20);
+      if (res.success) {
+        setTransactions(res.data.transactions);
+        setPagination(res.data.pagination);
       }
     } catch (err) {}
   };
@@ -51,19 +51,15 @@ export default function Wallet() {
     const idempotencyKey = crypto.randomUUID();
 
     try {
-      const res = await API.post(
-        "/api/wallet/credit",
-        { amount: paise },
-        { headers: { "Idempotency-Key": idempotencyKey } },
-      );
-      if (res.data.success) {
-        setBalance(res.data.data.balanceAfter);
+      const res = await creditWallet(paise, idempotencyKey);
+      if (res.success) {
+        setBalance(res.data.balanceAfter);
         setAmount("");
         setMessage("Money added successfully");
         fetchTransactions(page);
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to add money");
+      setError(err.error || err.message || "Failed to add money");
     }
   };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import API from "../api/axios";
+import { getMyBookings } from "./bookingsService";
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([]);
@@ -14,14 +14,10 @@ export default function Bookings() {
 
   const fetchBookings = async (p, status) => {
     try {
-      let url = `/api/bookings/my?page=${p}&limit=10`;
-      if (status) {
-        url += `&status=${status}`;
-      }
-      const res = await API.get(url);
-      if (res.data.success) {
-        setBookings(res.data.data.bookings);
-        setPagination(res.data.data.pagination);
+      const res = await getMyBookings(p, 10, status);
+      if (res.success) {
+        setBookings(res.data.bookings);
+        setPagination(res.data.pagination);
       }
     } catch (err) {}
   };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../api/axios";
+import { getEventDetails, getEventSeats, reserveSeatsApi } from "./seatSelectionService";
 
 export default function SeatSelection() {
   const { id } = useParams();
@@ -13,18 +13,18 @@ export default function SeatSelection() {
 
   const fetchEvent = async () => {
     try {
-      const res = await API.get(`/api/events/${id}`);
-      if (res.data.success) {
-        setEvent(res.data.data);
+      const res = await getEventDetails(id);
+      if (res.success) {
+        setEvent(res.data);
       }
     } catch (err) {}
   };
 
   const fetchSeats = async () => {
     try {
-      const res = await API.get(`/api/events/${id}/seats`);
-      if (res.data.success) {
-        setSeats(res.data.seats);
+      const res = await getEventSeats(id);
+      if (res.success) {
+        setSeats(res.seats);
       }
     } catch (err) {}
   };
@@ -45,18 +45,15 @@ export default function SeatSelection() {
   const handleReserve = async () => {
     setError("");
     try {
-      const res = await API.post("/api/bookings/reserve", {
-        eventId: id,
-        seatIds: selectedSeatIds,
-      });
-      if (res.data.success) {
-        const { reservationGroupId, amount, expiresAt } = res.data.data;
+      const res = await reserveSeatsApi(id, selectedSeatIds);
+      if (res.success) {
+        const { reservationGroupId, amount, expiresAt } = res.data;
         navigate(`/booking/confirm/${reservationGroupId}`, {
           state: { amount, expiresAt },
         });
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to reserve seats");
+      setError(err.error || err.message || "Failed to reserve seats");
     }
   };
 

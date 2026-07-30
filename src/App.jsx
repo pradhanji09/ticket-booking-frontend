@@ -2,18 +2,18 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import AdminLogin from "./pages/AdminLogin";
-import Wallet from "./pages/Wallet";
-import Events from "./pages/Events";
-import SeatSelection from "./pages/SeatSelection";
-import BookingConfirm from "./pages/BookingConfirm";
-import Bookings from "./pages/Bookings";
-import AdminEvents from "./pages/AdminEvents";
-import AdminSeatOverview from "./pages/AdminSeatOverview";
-import AdminBookings from "./pages/AdminBookings";
-import AdminTransactions from "./pages/AdminTransactions";
+import Login from "./pages/login/Login";
+import Signup from "./pages/signup/Signup";
+import AdminLogin from "./pages/adminLogin/AdminLogin";
+import Wallet from "./pages/wallet/Wallet";
+import Events from "./pages/events/Events";
+import SeatSelection from "./pages/seatSelection/SeatSelection";
+import BookingConfirm from "./pages/bookingConfirm/BookingConfirm";
+import Bookings from "./pages/bookings/Bookings";
+import AdminEvents from "./pages/adminEvents/AdminEvents";
+import AdminSeatOverview from "./pages/adminSeatOverview/AdminSeatOverview";
+import AdminBookings from "./pages/adminBookings/AdminBookings";
+import AdminTransactions from "./pages/adminTransactions/AdminTransactions";
 
 export default function App() {
   return (

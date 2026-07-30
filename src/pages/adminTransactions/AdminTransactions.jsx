@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import API from "../api/axios";
+import { getAdminTransactions } from "./adminTransactionsService";
 
 export default function AdminTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -19,18 +19,10 @@ export default function AdminTransactions() {
 
   const fetchTransactions = async (p, currentFilters) => {
     try {
-      let url = `/api/admin/transactions?page=${p}&limit=20`;
-      if (currentFilters.userId)
-        url += `&userId=${encodeURIComponent(currentFilters.userId)}`;
-      if (currentFilters.type)
-        url += `&type=${encodeURIComponent(currentFilters.type)}`;
-      if (currentFilters.reason)
-        url += `&reason=${encodeURIComponent(currentFilters.reason)}`;
-
-      const res = await API.get(url);
-      if (res.data.success) {
-        setTransactions(res.data.data.transactions);
-        setPagination(res.data.data.pagination);
+      const res = await getAdminTransactions(p, 20, currentFilters);
+      if (res.success) {
+        setTransactions(res.data.transactions);
+        setPagination(res.data.pagination);
       }
     } catch (err) {}
   };

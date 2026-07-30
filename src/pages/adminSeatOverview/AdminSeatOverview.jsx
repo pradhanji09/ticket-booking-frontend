@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import API from "../api/axios";
+import { getAdminSeatOverview } from "./adminSeatOverviewService";
 
 export default function AdminSeatOverview() {
   const { id } = useParams();
@@ -10,14 +10,10 @@ export default function AdminSeatOverview() {
 
   const fetchSeats = async (filter) => {
     try {
-      let url = `/api/events/${id}/seats`;
-      if (filter) {
-        url += `?status=${filter}`;
-      }
-      const res = await API.get(url);
-      if (res.data.success) {
-        setEventName(res.data.event);
-        setSeats(res.data.seats);
+      const res = await getAdminSeatOverview(id, filter);
+      if (res.success) {
+        setEventName(res.event);
+        setSeats(res.seats);
       }
     } catch (err) {}
   };

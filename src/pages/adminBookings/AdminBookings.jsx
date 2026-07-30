@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import API from "../api/axios";
+import {
+  getAdminBookings,
+  cancelAdminBookingApi,
+} from "./adminBookingsService";
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
@@ -24,18 +27,10 @@ export default function AdminBookings() {
 
   const fetchBookings = async (p, currentFilters) => {
     try {
-      let url = `/api/admin/bookings?page=${p}&limit=20`;
-      if (currentFilters.userId)
-        url += `&userId=${encodeURIComponent(currentFilters.userId)}`;
-      if (currentFilters.eventId)
-        url += `&eventId=${encodeURIComponent(currentFilters.eventId)}`;
-      if (currentFilters.status)
-        url += `&status=${encodeURIComponent(currentFilters.status)}`;
-
-      const res = await API.get(url);
-      if (res.data.success) {
-        setBookings(res.data.data.bookings);
-        setPagination(res.data.data.pagination);
+      const res = await getAdminBookings(p, 20, currentFilters);
+      if (res.success) {
+        setBookings(res.data.bookings);
+        setPagination(res.data.pagination);
       }
     } catch (err) {}
   };
@@ -58,14 +53,14 @@ export default function AdminBookings() {
     if (!window.confirm("Cancel this booking and refund?")) return;
     setActionMessage("");
     try {
-      const res = await API.post(`/api/admin/bookings/${bookingId}/cancel`);
-      if (res.data.success) {
-        const refundRupees = (res.data.data.refundAmount / 100).toFixed(2);
+      const res = await cancelAdminBookingApi(bookingId);
+      if (res.success) {
+        const refundRupees = (res.data.refundAmount / 100).toFixed(2);
         setActionMessage(`Booking cancelled. Refunded: ₹${refundRupees}`);
         fetchBookings(page, filters);
       }
     } catch (err) {
-      setActionMessage(err.response?.data?.error || "Failed to cancel booking");
+      setActionMessage(err.error || err.message || "Failed to cancel booking");
     }
   };
 
