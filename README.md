@@ -174,8 +174,8 @@ To support HTML5 client-side routing on Vercel (preventing 404 errors on browser
 
 ## Key Design Decisions
 
-1. **Token & Auth Persistence in `localStorage`**  
-   `localStorage` was chosen for persisting authentication tokens and user profile state. This ensures a persistent login session across page refreshes and browser reopens without unnecessary re-authentication calls.
+1. **Token Persistence in `localStorage` & AuthContext State Management**  
+   `localStorage` is used solely for persisting the JWT auth token. User profile state (`user`) is held in React's `AuthContext` and dynamically decoded from the JWT token on application initialization, avoiding unnecessary duplication in `localStorage`.
 
 2. **Component-State Preservation for Idempotency Keys**  
    The idempotency key for confirming a booking is initialized once per reservation attempt on component mount via `useState(() => crypto.randomUUID())`. By avoiding key regeneration during retries, any network failure or wallet top-up retry sends the identical key to the backend, enabling safe server-side idempotency handling.

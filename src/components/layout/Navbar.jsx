@@ -90,8 +90,10 @@ export default function Navbar() {
   const location = useLocation();
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    if (window.confirm("Are you sure you want to log out?")) {
+      logout();
+      navigate("/login");
+    }
   };
 
   if (!user) return null;

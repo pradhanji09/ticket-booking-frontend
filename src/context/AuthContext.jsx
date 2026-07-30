@@ -22,15 +22,14 @@ const decodeJWT = (token) => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
+    const token = localStorage.getItem("token");
+    return token ? decodeJWT(token) : null;
   });
 
   const login = (token) => {
     const userData = decodeJWT(token);
     if (userData) {
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
     }
     return userData;
@@ -38,7 +37,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     setUser(null);
   };
 

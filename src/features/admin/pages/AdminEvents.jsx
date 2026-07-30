@@ -235,7 +235,9 @@ export default function AdminEvents() {
                 id="eventDate"
                 type="datetime-local"
                 value={form.eventDate}
-                onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, eventDate: e.target.value })
+                }
                 required
               />
             </div>
@@ -341,11 +343,25 @@ export default function AdminEvents() {
                       </FlexRow>
 
                       {seatFormEventId === eventId && (
-                        <Card style={{ marginTop: "10px", padding: "12px", backgroundColor: "#f8fafc", textAlign: "left" }}>
-                          <form onSubmit={(e) => handleBulkCreateSeats(e, eventId)}>
-                            <FlexRow gap="8px" style={{ alignItems: "flex-end" }}>
+                        <Card
+                          style={{
+                            marginTop: "10px",
+                            padding: "12px",
+                            backgroundColor: "#f8fafc",
+                            textAlign: "left",
+                          }}
+                        >
+                          <form
+                            onSubmit={(e) => handleBulkCreateSeats(e, eventId)}
+                          >
+                            <FlexRow
+                              gap="8px"
+                              style={{ alignItems: "flex-end" }}
+                            >
                               <div>
-                                <Label style={{ fontSize: "11px" }}>Count</Label>
+                                <Label style={{ fontSize: "11px" }}>
+                                  Count
+                                </Label>
                                 <Input
                                   type="number"
                                   min="1"
@@ -361,7 +377,9 @@ export default function AdminEvents() {
                                 />
                               </div>
                               <div>
-                                <Label style={{ fontSize: "11px" }}>Prefix</Label>
+                                <Label style={{ fontSize: "11px" }}>
+                                  Prefix
+                                </Label>
                                 <Input
                                   type="text"
                                   value={seatForm.prefix}
@@ -377,14 +395,20 @@ export default function AdminEvents() {
                               </div>
                               <Button
                                 type="submit"
-                                style={{ padding: "6px 10px", fontSize: "12px" }}
+                                style={{
+                                  padding: "6px 10px",
+                                  fontSize: "12px",
+                                }}
                               >
                                 Add
                               </Button>
                               <SecondaryButton
                                 type="button"
                                 onClick={() => setSeatFormEventId(null)}
-                                style={{ padding: "6px 10px", fontSize: "12px" }}
+                                style={{
+                                  padding: "6px 10px",
+                                  fontSize: "12px",
+                                }}
                               >
                                 Close
                               </SecondaryButton>

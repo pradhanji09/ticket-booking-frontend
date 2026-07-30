@@ -112,7 +112,9 @@ export default function Events() {
   return (
     <PageContainer>
       <HeaderSection>
-        <Badge status="ACTIVE">{pagination.total || events.length} Events Available</Badge>
+        <Badge status="ACTIVE">
+          {pagination.total || events.length} Events Available
+        </Badge>
       </HeaderSection>
 
       {events.length === 0 ? (
@@ -136,13 +138,15 @@ export default function Events() {
                 <EventMeta>
                   <MetaRow>
                     <span>Date</span>
-                    <span>{new Date(event.eventDate).toLocaleDateString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}</span>
+                    <span>
+                      {new Date(event.eventDate).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
                   </MetaRow>
                   <MetaRow>
                     <span>Seats</span>
@@ -152,9 +156,18 @@ export default function Events() {
               </div>
 
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "12px" }}>
-                  <span style={{ fontSize: "12px", color: "#71717a" }}>Price per seat</span>
-                  <PriceTag>₹{event.pricePerSeat}</PriceTag>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "baseline",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <span style={{ fontSize: "12px", color: "#71717a" }}>
+                    Price per seat
+                  </span>
+                  <PriceTag>₹{event.pricePerSeat / 100}</PriceTag>
                 </div>
 
                 <Button
