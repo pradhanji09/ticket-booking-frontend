@@ -10,6 +10,7 @@ import Events from "./pages/Events";
 import SeatSelection from "./pages/SeatSelection";
 import BookingConfirm from "./pages/BookingConfirm";
 import Bookings from "./pages/Bookings";
+import AdminEvents from "./pages/AdminEvents";
 
 export default function App() {
   return (
@@ -65,7 +66,7 @@ export default function App() {
             path="/admin/events"
             element={
               <AdminRoute>
-                <h2>Admin Events</h2>
+                <AdminEvents />
               </AdminRoute>
             }
           />
