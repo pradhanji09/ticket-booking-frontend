@@ -5,6 +5,7 @@ import AdminRoute from "./routes/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import AdminLogin from "./pages/AdminLogin";
+import Wallet from "./pages/Wallet";
 
 export default function App() {
   return (
@@ -27,7 +28,7 @@ export default function App() {
             path="/wallet"
             element={
               <ProtectedRoute>
-                <h2>Wallet</h2>
+                <Wallet />
               </ProtectedRoute>
             }
           />
