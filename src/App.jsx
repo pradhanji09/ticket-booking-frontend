@@ -8,6 +8,7 @@ import AdminLogin from "./pages/AdminLogin";
 import Wallet from "./pages/Wallet";
 import Events from "./pages/Events";
 import SeatSelection from "./pages/SeatSelection";
+import BookingConfirm from "./pages/BookingConfirm";
 
 export default function App() {
   return (
@@ -31,6 +32,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <SeatSelection />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/booking/confirm/:reservationGroupId"
+            element={
+              <ProtectedRoute>
+                <BookingConfirm />
               </ProtectedRoute>
             }
           />
