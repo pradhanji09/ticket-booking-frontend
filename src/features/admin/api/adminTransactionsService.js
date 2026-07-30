@@ -2,7 +2,7 @@ import httpService from "../../../api/httpService";
 
 export const getAdminTransactions = (
   page = 1,
-  limit = 20,
+  limit = 10,
   currentFilters = {},
 ) => {
   let url = `/api/wallet/admin/transactions?page=${page}&limit=${limit}`;

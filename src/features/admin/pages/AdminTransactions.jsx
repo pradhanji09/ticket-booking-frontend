@@ -17,7 +17,7 @@ import {
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
@@ -67,7 +67,7 @@ export default function AdminTransactions() {
     <PageContainer>
       <PageTitle>Admin Transactions Dashboard</PageTitle>
 
-      <Card style={{ marginBottom: "20px" }}>
+      <Card style={{ marginBottom: "16px" }}>
         <form onSubmit={handleApplyFilters}>
           <FlexRow gap="12px" style={{ alignItems: "flex-end" }}>
             <div style={{ flex: 1, minWidth: "140px" }}>
@@ -113,7 +113,7 @@ export default function AdminTransactions() {
       </Card>
 
       {transactions.length === 0 ? (
-        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+        <Card style={{ textAlign: "center", padding: "24px" }}>
           <p style={{ color: "#64748b" }}>No transactions found.</p>
         </Card>
       ) : (
@@ -122,7 +122,6 @@ export default function AdminTransactions() {
             <thead>
               <tr>
                 <th>User Name</th>
-                <th>User Email</th>
                 <th>Type</th>
                 <th>Amount (₹)</th>
                 <th>Reason</th>
@@ -133,13 +132,18 @@ export default function AdminTransactions() {
             <tbody>
               {transactions.map((tx) => (
                 <tr key={tx.id || tx._id}>
-                  <td style={{ fontWeight: 600 }}>{tx.user?.name}</td>
-                  <td>{tx.user?.email}</td>
+                  <td style={{ fontWeight: 600 }}>{tx.user?.name || "N/A"}</td>
                   <td>
                     <Badge status={tx.type}>{tx.type}</Badge>
                   </td>
-                  <td style={{ fontWeight: 700, color: tx.type === "CREDIT" ? "#16a34a" : "#dc2626" }}>
-                    {tx.type === "CREDIT" ? "+" : "-"}₹{(tx.amount / 100).toFixed(2)}
+                  <td
+                    style={{
+                      fontWeight: 600,
+                      color: tx.type === "CREDIT" ? "#15803d" : "#18181b",
+                    }}
+                  >
+                    {tx.type === "CREDIT" ? "+" : "-"}₹
+                    {(tx.amount / 100).toFixed(2)}
                   </td>
                   <td>{tx.reason}</td>
                   <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>

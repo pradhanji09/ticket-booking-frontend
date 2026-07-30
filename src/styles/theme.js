@@ -1,16 +1,16 @@
 export const theme = {
   colors: {
-    primary: "#991b1b",         // Soft, elegant deep crimson
-    primaryHover: "#7f1d1d",
+    primary: "#b91c1c",         // Classic clean dark red accent
+    primaryHover: "#991b1b",
     primaryLight: "#fef2f2",
-    background: "#fafafa",      // Clean neutral background
-    surface: "#ffffff",         // Surface background
-    surfaceAlt: "#f4f4f5",      // Subtle gray surface
-    border: "#e4e4e7",         // Subtle gray border
-    borderDark: "#d4d4d8",
-    text: "#18181b",            // Dark slate text
-    textMuted: "#71717a",       // Muted text
-    textLight: "#a1a1aa",
+    background: "#f8fafc",      // Slate clean neutral background
+    surface: "#ffffff",         // Pure white cards & containers
+    surfaceAlt: "#f1f5f9",      // Light gray surface
+    border: "#e2e8f0",         // Crisp 1px border
+    borderDark: "#cbd5e1",
+    text: "#0f172a",            // Crisp dark slate text
+    textMuted: "#64748b",       // Secondary muted text
+    textLight: "#94a3b8",
     danger: "#dc2626",
     dangerHover: "#b91c1c",
     dangerLight: "#fef2f2",
@@ -27,10 +27,9 @@ export const theme = {
     md: "16px",
     lg: "24px",
     xl: "32px",
-    xxl: "48px",
   },
-  radius: "6px",
-  radiusSm: "4px",
+  radius: "4px",                // Clean, non-gimmicky classic radius
+  radiusSm: "2px",
   radiusFull: "9999px",
   font: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   shadowSm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",

@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 export const PageContainer = styled.div`
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: 16px;
 
   @media (min-width: 640px) {
-    padding: ${({ theme }) => theme.spacing.lg};
+    padding: 24px;
   }
 `;
 
@@ -14,10 +14,13 @@ export const Card = styled.div`
   background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius};
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: 16px;
+  margin-bottom: 16px;
   box-shadow: ${({ theme }) => theme.shadowSm};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  transition: border-color 0.15s ease-in-out;
+
+  @media (min-width: 640px) {
+    padding: 20px;
+  }
 `;
 
 export const Button = styled.button`
@@ -25,22 +28,19 @@ export const Button = styled.button`
   color: #ffffff;
   border: 1px solid transparent;
   border-radius: ${({ theme }) => theme.radius};
-  padding: 10px 18px;
-  font-size: 14px;
+  padding: 8px 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
   outline: none;
+  white-space: nowrap;
 
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.primaryHover};
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(1px);
   }
 
   &:disabled {
@@ -68,21 +68,11 @@ export const DangerButton = styled(Button)`
   }
 `;
 
-export const OutlineButton = styled(Button)`
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.primary};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-
-  &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.colors.primaryLight};
-  }
-`;
-
 export const Input = styled.input`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius};
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: 8px 12px;
+  font-size: 13px;
   color: ${({ theme }) => theme.colors.text};
   background-color: ${({ theme }) => theme.colors.surface};
   outline: none;
@@ -91,40 +81,33 @@ export const Input = styled.input`
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primaryLight};
-  }
-
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.textLight};
   }
 `;
 
 export const Select = styled.select`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius};
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: 8px 12px;
+  font-size: 13px;
   color: ${({ theme }) => theme.colors.text};
   background-color: ${({ theme }) => theme.colors.surface};
   outline: none;
-  transition: border-color 0.15s ease-in-out;
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primaryLight};
   }
 `;
 
 export const Label = styled.label`
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text};
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  margin-bottom: 4px;
 `;
 
 export const FormGroup = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.md};
+  margin-bottom: 14px;
 
   &:last-child {
     margin-bottom: 0;
@@ -134,10 +117,11 @@ export const FormGroup = styled.div`
 export const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: ${({ theme }) => theme.radius};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  margin-top: ${({ theme }) => theme.spacing.sm};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
+  margin-top: 8px;
+  margin-bottom: 16px;
   background-color: ${({ theme }) => theme.colors.surface};
 `;
 
@@ -148,7 +132,7 @@ export const Table = styled.table`
 
   th,
   td {
-    padding: 12px 14px;
+    padding: 10px 12px;
     text-align: left;
     font-size: 13px;
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
@@ -175,11 +159,10 @@ export const Table = styled.table`
 export const Badge = styled.span`
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: ${({ theme }) => theme.radiusSm};
+  padding: 2px 6px;
+  border-radius: 2px;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.3px;
   text-transform: uppercase;
   background-color: ${({ status, theme }) => {
     switch (status) {
@@ -222,13 +205,13 @@ export const Badge = styled.span`
         case "AVAILABLE":
         case "CONFIRMED":
         case "CREDIT":
-          return "rgba(22, 163, 74, 0.2)";
+          return "rgba(21, 128, 61, 0.2)";
         case "CANCELLED":
         case "DEBIT":
           return "rgba(220, 38, 38, 0.2)";
         case "RESERVED":
         case "BOOKED":
-          return "rgba(217, 119, 6, 0.2)";
+          return "rgba(180, 83, 9, 0.2)";
         default:
           return theme.colors.border;
       }
@@ -237,31 +220,31 @@ export const Badge = styled.span`
 
 export const ErrorText = styled.span`
   color: ${({ theme }) => theme.colors.danger};
-  font-size: 13px;
+  font-size: 12px;
   display: block;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: 8px;
 `;
 
 export const SuccessText = styled.span`
   color: ${({ theme }) => theme.colors.success};
-  font-size: 13px;
+  font-size: 12px;
   display: block;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: 8px;
 `;
 
 export const FlexRow = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ gap, theme }) => (gap ? gap : theme.spacing.sm)};
+  gap: ${({ gap }) => (gap ? gap : "8px")};
   flex-wrap: wrap;
 `;
 
 export const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: ${({ theme }) => theme.spacing.md};
+  grid-template-columns: 1fr;
+  gap: 16px;
 
-  @media (min-width: 640px) {
+  @media (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -270,10 +253,13 @@ export const GridContainer = styled.div`
   }
 `;
 
-export const PaginationContainer = styled(FlexRow)`
-  margin-top: ${({ theme }) => theme.spacing.md};
+export const PaginationContainer = styled.div`
+  display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
   font-size: 13px;
   color: ${({ theme }) => theme.colors.textMuted};
 `;

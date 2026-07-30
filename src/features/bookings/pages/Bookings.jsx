@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { getMyBookings } from "../api/bookingsService";
+import { getMyBookings, cancelBookingApi } from "../api/bookingsService";
 import {
   PageContainer,
   Card,
@@ -9,6 +9,7 @@ import {
   Select,
   Label,
   Badge,
+  DangerButton,
   FlexRow,
   SecondaryButton,
   PaginationContainer,
@@ -24,9 +25,15 @@ const HeaderSection = styled.div`
 `;
 
 const PageTitle = styled.h2`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
+`;
+
+const ActionMsg = styled.p`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 13px;
+  margin-bottom: 12px;
 `;
 
 export default function Bookings() {
@@ -39,6 +46,7 @@ export default function Bookings() {
   });
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
 
   const fetchBookings = async (p, status) => {
     try {
@@ -57,6 +65,20 @@ export default function Bookings() {
   const handleFilterChange = (e) => {
     setStatusFilter(e.target.value);
     setPage(1);
+  };
+
+  const handleCancelMyBooking = async (bookingId) => {
+    if (!window.confirm("Cancel this booking? Refund will be credited to your wallet.")) return;
+    setActionMessage("");
+    try {
+      const res = await cancelBookingApi(bookingId);
+      if (res.success) {
+        setActionMessage("Booking cancelled successfully and wallet refunded.");
+        fetchBookings(page, statusFilter);
+      }
+    } catch (err) {
+      setActionMessage(err.error || err.message || "Failed to cancel booking");
+    }
   };
 
   return (
@@ -80,8 +102,10 @@ export default function Bookings() {
         </FlexRow>
       </HeaderSection>
 
+      {actionMessage && <ActionMsg>{actionMessage}</ActionMsg>}
+
       {bookings.length === 0 ? (
-        <Card style={{ textAlign: "center", padding: "40px 20px" }}>
+        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
           <p style={{ color: "#64748b" }}>No bookings found.</p>
         </Card>
       ) : (
@@ -95,6 +119,7 @@ export default function Bookings() {
                 <th>Amount (₹)</th>
                 <th>Status</th>
                 <th>Booking Date</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -103,13 +128,23 @@ export default function Bookings() {
                   <td style={{ fontWeight: 600 }}>{b.eventName}</td>
                   <td>{Array.isArray(b.seats) ? b.seats.join(", ") : b.seats}</td>
                   <td>{b.seatCount}</td>
-                  <td style={{ fontWeight: 700, color: "#e23744" }}>
+                  <td style={{ fontWeight: 600 }}>
                     ₹{(b.amount / 100).toFixed(2)}
                   </td>
                   <td>
                     <Badge status={b.status}>{b.status}</Badge>
                   </td>
                   <td>{new Date(b.createdAt).toLocaleString()}</td>
+                  <td style={{ textAlign: "right" }}>
+                    {b.status === "CONFIRMED" && (
+                      <DangerButton
+                        style={{ padding: "4px 8px", fontSize: "12px" }}
+                        onClick={() => handleCancelMyBooking(b.id || b._id)}
+                      >
+                        Cancel
+                      </DangerButton>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

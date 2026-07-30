@@ -7,3 +7,7 @@ export const getMyBookings = (page = 1, limit = 10, status = "") => {
   }
   return httpService.get(url);
 };
+
+export const cancelBookingApi = (bookingId) => {
+  return httpService.post(`/api/bookings/${bookingId}/cancel`);
+};

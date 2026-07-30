@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { getAdminBookings } from "../api/adminBookingsService";
+import {
+  getAdminBookings,
+  cancelAdminBookingApi,
+} from "../api/adminBookingsService";
 import {
   PageContainer,
   Card,
@@ -10,6 +13,7 @@ import {
   Select,
   Label,
   Button,
+  DangerButton,
   SecondaryButton,
   Badge,
   FlexRow,
@@ -17,10 +21,17 @@ import {
 } from "../../../components/ui";
 
 const PageTitle = styled.h2`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const InfoText = styled.p`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 13px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  font-weight: 500;
 `;
 
 export default function AdminBookings() {
@@ -42,6 +53,7 @@ export default function AdminBookings() {
     eventId: "",
     status: "",
   });
+  const [actionMessage, setActionMessage] = useState("");
 
   const fetchBookings = async (p, currentFilters) => {
     try {
@@ -76,11 +88,32 @@ export default function AdminBookings() {
     setPage(1);
   };
 
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm("Cancel this booking and refund the user?")) return;
+    setActionMessage("");
+    try {
+      const res = await cancelAdminBookingApi(bookingId);
+      if (res.success) {
+        const refundRupees = (
+          res.data?.refundAmount ? res.data.refundAmount / 100 : 0
+        ).toFixed(2);
+        setActionMessage(
+          `Booking cancelled successfully. Refunded: ₹${refundRupees}`,
+        );
+        fetchBookings(page, filters);
+      }
+    } catch (err) {
+      setActionMessage(err.error || err.message || "Failed to cancel booking");
+    }
+  };
+
   return (
     <PageContainer>
       <PageTitle>Admin Booking Dashboard</PageTitle>
 
-      <Card style={{ marginBottom: "20px" }}>
+      {actionMessage && <InfoText>{actionMessage}</InfoText>}
+
+      <Card style={{ marginBottom: "16px" }}>
         <form onSubmit={handleApplyFilters}>
           <FlexRow gap="12px" style={{ alignItems: "flex-end" }}>
             <div style={{ flex: 1, minWidth: "140px" }}>
@@ -90,7 +123,7 @@ export default function AdminBookings() {
                 type="text"
                 value={userIdInput}
                 onChange={(e) => setUserIdInput(e.target.value)}
-                placeholder="User ID"
+                placeholder="Paste User ID"
               />
             </div>
             <div style={{ flex: 1, minWidth: "140px" }}>
@@ -122,7 +155,7 @@ export default function AdminBookings() {
       </Card>
 
       {bookings?.length === 0 ? (
-        <Card style={{ textAlign: "center", padding: "30px 20px" }}>
+        <Card style={{ textAlign: "center", padding: "24px" }}>
           <p style={{ color: "#64748b" }}>No bookings found.</p>
         </Card>
       ) : (
@@ -132,33 +165,51 @@ export default function AdminBookings() {
               <tr>
                 <th>User ID</th>
                 <th>User Name</th>
-                <th>User Email</th>
                 <th>Event Name</th>
-                <th>Seat Count</th>
+                <th>Seats</th>
                 <th>Amount (₹)</th>
                 <th>Status</th>
                 <th>Date</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {bookings.map((b) => (
-                <tr key={b._id || b.id}>
-                  <td style={{ fontSize: "11px", fontFamily: "monospace", color: "#64748b" }}>
-                    {(b.user?._id || b.user?.id || b.userId)?.slice(0, 10)}...
-                  </td>
-                  <td style={{ fontWeight: 600 }}>{b.user?.name}</td>
-                  <td>{b.user?.email}</td>
-                  <td>{b.event?.name || b.eventName}</td>
-                  <td>{b.seatCount}</td>
-                  <td style={{ fontWeight: 700, color: "#e23744" }}>
-                    ₹{(b.amount / 100).toFixed(2)}
-                  </td>
-                  <td>
-                    <Badge status={b.status}>{b.status}</Badge>
-                  </td>
-                  <td>{new Date(b.createdAt).toLocaleString()}</td>
-                </tr>
-              ))}
+              {bookings.map((b) => {
+                const userIdVal = b.user?._id || b.user?.id || b.userId || "";
+                return (
+                  <tr key={b._id || b.id}>
+                    <td
+                      style={{
+                        fontSize: "12px",
+                        fontFamily: "monospace",
+                        userSelect: "all",
+                      }}
+                    >
+                      {userIdVal}
+                    </td>
+                    <td style={{ fontWeight: 600 }}>{b.user?.name || "N/A"}</td>
+                    <td>{b.event?.name || b.eventName}</td>
+                    <td>{b.seatCount}</td>
+                    <td style={{ fontWeight: 600 }}>
+                      ₹{(b.amount / 100).toFixed(2)}
+                    </td>
+                    <td>
+                      <Badge status={b.status}>{b.status}</Badge>
+                    </td>
+                    <td>{new Date(b.createdAt).toLocaleString()}</td>
+                    <td style={{ textAlign: "right" }}>
+                      {b.status === "CONFIRMED" && (
+                        <DangerButton
+                          style={{ padding: "4px 8px", fontSize: "12px" }}
+                          onClick={() => handleCancelBooking(b._id || b.id)}
+                        >
+                          Cancel
+                        </DangerButton>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         </TableWrapper>

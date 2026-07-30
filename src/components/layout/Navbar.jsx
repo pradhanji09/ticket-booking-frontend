@@ -12,16 +12,17 @@ const NavHeader = styled.header`
 `;
 
 const NavContainer = styled.div`
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 12px 16px;
+  padding: 10px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
 
-  @media (min-width: 640px) {
-    padding: 14px 24px;
+  @media (max-width: 520px) {
+    padding: 10px 12px;
   }
 `;
 
@@ -32,35 +33,21 @@ const BrandLink = styled(Link)`
   text-decoration: none;
 `;
 
-const LogoIcon = styled.span`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: #ffffff;
+const LogoText = styled.span`
   font-weight: 800;
-  font-size: 13px;
-  padding: 3px 7px;
-  border-radius: ${({ theme }) => theme.radiusSm};
-  letter-spacing: 0.5px;
-`;
-
-const BrandTitle = styled.span`
-  font-weight: 700;
   font-size: 15px;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const NavRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  color: ${({ theme }) => theme.colors.primary};
+  letter-spacing: -0.3px;
 `;
 
 const NavLinks = styled.nav`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-wrap: wrap;
 
   @media (min-width: 640px) {
-    gap: 12px;
+    gap: 8px;
   }
 `;
 
@@ -71,10 +58,9 @@ const NavItem = styled(Link)`
   font-weight: ${({ active }) => (active ? "600" : "500")};
   text-decoration: none;
   padding: 6px 10px;
-  border-radius: ${({ theme }) => theme.radiusSm};
+  border-radius: ${({ theme }) => theme.radius};
   background-color: ${({ active, theme }) =>
     active ? theme.colors.primaryLight : "transparent"};
-  transition: all 0.15s ease-in-out;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
@@ -90,8 +76,7 @@ const LogoutButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   padding: 6px 10px;
-  border-radius: ${({ theme }) => theme.radiusSm};
-  transition: all 0.15s ease-in-out;
+  border-radius: ${({ theme }) => theme.radius};
 
   &:hover {
     color: ${({ theme }) => theme.colors.danger};
@@ -117,59 +102,56 @@ export default function Navbar() {
     <NavHeader>
       <NavContainer>
         <BrandLink to={isAdmin ? "/admin/events" : "/events"}>
-          <LogoIcon>TICKET</LogoIcon>
-          <BrandTitle>ShowPass</BrandTitle>
+          <LogoText>Ticket Booking</LogoText>
           {isAdmin && <Badge status="BOOKED">Admin</Badge>}
         </BrandLink>
 
-        <NavRight>
-          <NavLinks>
-            {isAdmin ? (
-              <>
-                <NavItem
-                  to="/admin/events"
-                  active={location.pathname.startsWith("/admin/events") ? 1 : 0}
-                >
-                  Events
-                </NavItem>
-                <NavItem
-                  to="/admin/bookings"
-                  active={location.pathname === "/admin/bookings" ? 1 : 0}
-                >
-                  Bookings
-                </NavItem>
-                <NavItem
-                  to="/admin/transactions"
-                  active={location.pathname === "/admin/transactions" ? 1 : 0}
-                >
-                  Transactions
-                </NavItem>
-              </>
-            ) : (
-              <>
-                <NavItem
-                  to="/events"
-                  active={location.pathname.startsWith("/events") ? 1 : 0}
-                >
-                  Events
-                </NavItem>
-                <NavItem
-                  to="/bookings"
-                  active={location.pathname === "/bookings" ? 1 : 0}
-                >
-                  Bookings
-                </NavItem>
-                <NavItem
-                  to="/wallet"
-                  active={location.pathname === "/wallet" ? 1 : 0}
-                >
-                  Wallet
-                </NavItem>
-              </>
-            )}
-            <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
-          </NavLinks>
-        </NavRight>
+        <NavLinks>
+          {isAdmin ? (
+            <>
+              <NavItem
+                to="/admin/events"
+                active={location.pathname.startsWith("/admin/events") ? 1 : 0}
+              >
+                Events
+              </NavItem>
+              <NavItem
+                to="/admin/bookings"
+                active={location.pathname === "/admin/bookings" ? 1 : 0}
+              >
+                Bookings
+              </NavItem>
+              <NavItem
+                to="/admin/transactions"
+                active={location.pathname === "/admin/transactions" ? 1 : 0}
+              >
+                Transactions
+              </NavItem>
+            </>
+          ) : (
+            <>
+              <NavItem
+                to="/events"
+                active={location.pathname.startsWith("/events") ? 1 : 0}
+              >
+                Events
+              </NavItem>
+              <NavItem
+                to="/bookings"
+                active={location.pathname === "/bookings" ? 1 : 0}
+              >
+                Bookings
+              </NavItem>
+              <NavItem
+                to="/wallet"
+                active={location.pathname === "/wallet" ? 1 : 0}
+              >
+                Wallet
+              </NavItem>
+            </>
+          )}
+          <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+        </NavLinks>
       </NavContainer>
     </NavHeader>
   );
