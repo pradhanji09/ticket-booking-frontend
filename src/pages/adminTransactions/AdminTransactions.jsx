@@ -1,5 +1,24 @@
 import { useState, useEffect } from "react";
+import styled from "styled-components";
 import { getAdminTransactions } from "./adminTransactionsService";
+import {
+  PageContainer,
+  Card,
+  Table,
+  Input,
+  Select,
+  Label,
+  Button,
+  SecondaryButton,
+  FlexRow,
+  PaginationContainer,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
 
 export default function AdminTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -42,59 +61,57 @@ export default function AdminTransactions() {
   };
 
   return (
-    <div>
-      <h2>Admin Transactions Dashboard</h2>
+    <PageContainer>
+      <PageTitle>Admin Transactions Dashboard</PageTitle>
 
-      <form onSubmit={handleApplyFilters} style={{ marginBottom: "20px" }}>
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <label>User ID: </label>
-            <input
-              type="text"
-              value={userIdInput}
-              onChange={(e) => setUserIdInput(e.target.value)}
-              placeholder="User ID"
-            />
-          </div>
-          <div>
-            <label>Type: </label>
-            <select
-              value={typeInput}
-              onChange={(e) => setTypeInput(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="CREDIT">CREDIT</option>
-              <option value="DEBIT">DEBIT</option>
-            </select>
-          </div>
-          <div>
-            <label>Reason: </label>
-            <select
-              value={reasonInput}
-              onChange={(e) => setReasonInput(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="WALLET_TOPUP">WALLET_TOPUP</option>
-              <option value="BOOKING_PAYMENT">BOOKING_PAYMENT</option>
-              <option value="BOOKING_REFUND">BOOKING_REFUND</option>
-              <option value="ADMIN_ADJUSTMENT">ADMIN_ADJUSTMENT</option>
-            </select>
-          </div>
-          <button type="submit">Apply Filters</button>
-        </div>
-      </form>
+      <Card>
+        <form onSubmit={handleApplyFilters}>
+          <FlexRow gap="12px" style={{ alignItems: "flex-end" }}>
+            <div>
+              <Label htmlFor="txUserId">User ID</Label>
+              <Input
+                id="txUserId"
+                type="text"
+                value={userIdInput}
+                onChange={(e) => setUserIdInput(e.target.value)}
+                placeholder="User ID"
+              />
+            </div>
+            <div>
+              <Label htmlFor="txType">Type</Label>
+              <Select
+                id="txType"
+                value={typeInput}
+                onChange={(e) => setTypeInput(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="CREDIT">CREDIT</option>
+                <option value="DEBIT">DEBIT</option>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="txReason">Reason</Label>
+              <Select
+                id="txReason"
+                value={reasonInput}
+                onChange={(e) => setReasonInput(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="WALLET_TOPUP">WALLET_TOPUP</option>
+                <option value="BOOKING_PAYMENT">BOOKING_PAYMENT</option>
+                <option value="BOOKING_REFUND">BOOKING_REFUND</option>
+                <option value="ADMIN_ADJUSTMENT">ADMIN_ADJUSTMENT</option>
+              </Select>
+            </div>
+            <Button type="submit">Apply Filters</Button>
+          </FlexRow>
+        </form>
+      </Card>
 
       {transactions.length === 0 ? (
-        <p>No transactions found</p>
+        <Card>No transactions found</Card>
       ) : (
-        <table border="1" cellPadding="5" cellSpacing="0">
+        <Table>
           <thead>
             <tr>
               <th>User Name</th>
@@ -119,23 +136,23 @@ export default function AdminTransactions() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
 
-      <div style={{ marginTop: "10px" }}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+      <PaginationContainer>
+        <SecondaryButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
           Previous
-        </button>
-        <span style={{ margin: "0 10px" }}>
+        </SecondaryButton>
+        <span>
           Page {pagination.page} of {pagination.totalPages}
         </span>
-        <button
+        <SecondaryButton
           disabled={page >= pagination.totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
           Next
-        </button>
-      </div>
-    </div>
+        </SecondaryButton>
+      </PaginationContainer>
+    </PageContainer>
   );
 }

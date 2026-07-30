@@ -1,6 +1,51 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import styled from "styled-components";
 import { getAdminSeatOverview } from "./adminSeatOverviewService";
+import {
+  PageContainer,
+  Card,
+  Select,
+  Label,
+  FlexRow,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const SubTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.textMuted};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const SeatCard = styled.div`
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radius};
+  padding: ${({ theme }) => theme.spacing.sm};
+  min-width: 110px;
+  background-color: ${({ status, theme }) =>
+    status === "AVAILABLE"
+      ? "#f0fdf4"
+      : status === "RESERVED"
+        ? "#fffbeb"
+        : "#fef2f2"};
+
+  strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  span {
+    font-size: 12px;
+    color: ${({ theme }) => theme.colors.textMuted};
+  }
+`;
 
 export default function AdminSeatOverview() {
   const { id } = useParams();
@@ -23,16 +68,29 @@ export default function AdminSeatOverview() {
   }, [id, statusFilter]);
 
   return (
-    <div>
-      <p>
-        <Link to="/admin/events">&larr; Back to Events</Link>
-      </p>
-      <h2>Admin Seat Overview</h2>
-      {eventName && <h3>Event: {eventName}</h3>}
+    <PageContainer>
+      <div style={{ marginBottom: "12px" }}>
+        <Link
+          to="/admin/events"
+          style={{
+            textDecoration: "underline",
+            color: "#1a1a1a",
+            fontSize: "13px",
+          }}
+        >
+          &larr; Back to Events
+        </Link>
+      </div>
 
-      <div style={{ marginBottom: "15px" }}>
-        <label>Filter Status: </label>
-        <select
+      <PageTitle>Admin Seat Overview</PageTitle>
+      {eventName && <SubTitle>Event: {eventName}</SubTitle>}
+
+      <FlexRow style={{ marginBottom: "16px" }}>
+        <Label htmlFor="seatFilter" style={{ marginBottom: 0 }}>
+          Filter Status:
+        </Label>
+        <Select
+          id="seatFilter"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -40,30 +98,21 @@ export default function AdminSeatOverview() {
           <option value="AVAILABLE">AVAILABLE</option>
           <option value="RESERVED">RESERVED</option>
           <option value="BOOKED">BOOKED</option>
-        </select>
-      </div>
+        </Select>
+      </FlexRow>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-        {seats.map((seat, index) => (
-          <div
-            key={seat.id || index}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              minWidth: "100px",
-              backgroundColor:
-                seat.status === "AVAILABLE"
-                  ? "#e8f5e9"
-                  : seat.status === "RESERVED"
-                    ? "#fff3e0"
-                    : "#ffebee",
-            }}
-          >
-            <strong>Seat {seat.seatNumber}</strong>
-            <p>Status: {seat.status}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+      {seats.length === 0 ? (
+        <Card>No seats found for this filter</Card>
+      ) : (
+        <FlexRow gap="10px">
+          {seats.map((seat, index) => (
+            <SeatCard key={seat.id || index} status={seat.status}>
+              <strong>Seat {seat.seatNumber}</strong>
+              <span>Status: {seat.status}</span>
+            </SeatCard>
+          ))}
+        </FlexRow>
+      )}
+    </PageContainer>
   );
 }

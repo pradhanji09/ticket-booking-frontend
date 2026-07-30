@@ -1,7 +1,39 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { loginApi } from "./loginService";
 import { useAuth } from "../../context/AuthContext";
+import {
+  PageContainer,
+  Card,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  ErrorText,
+} from "../../components/ui";
+
+const AuthWrapper = styled(PageContainer)`
+  max-width: 400px;
+  margin-top: 40px;
+`;
+
+const AuthHeader = styled.h2`
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+const FooterText = styled.p`
+  margin-top: ${({ theme }) => theme.spacing.md};
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.textMuted};
+
+  a {
+    color: ${({ theme }) => theme.colors.text};
+    text-decoration: underline;
+  }
+`;
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -25,39 +57,41 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="glass-panel">
-        <h2>Login</h2>
-        {error && <div className="error-message">{error}</div>}
+    <AuthWrapper>
+      <Card>
+        <AuthHeader>Login</AuthHeader>
+        {error && <ErrorText>{error}</ErrorText>}
         <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Email</label>
-            <input
+          <FormGroup>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Enter your email"
             />
-          </div>
-          <div className="input-group">
-            <label>Password</label>
-            <input
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Enter your password"
             />
-          </div>
-          <button type="submit" className="btn-primary">
+          </FormGroup>
+          <Button type="submit" style={{ width: "100%" }}>
             Login
-          </button>
+          </Button>
         </form>
-        <div className="auth-links">
+        <FooterText>
           Don't have an account? <Link to="/signup">Sign up</Link>
-        </div>
-      </div>
-    </div>
+        </FooterText>
+      </Card>
+    </AuthWrapper>
   );
 }

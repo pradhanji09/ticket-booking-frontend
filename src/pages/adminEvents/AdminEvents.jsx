@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 import {
   getAdminEvents,
   createEventApi,
@@ -6,6 +8,39 @@ import {
   cancelEventApi,
   bulkCreateSeatsApi,
 } from "./adminEventsService";
+import {
+  PageContainer,
+  Card,
+  Table,
+  Input,
+  Label,
+  FormGroup,
+  Button,
+  DangerButton,
+  SecondaryButton,
+  ErrorText,
+  SuccessText,
+  FlexRow,
+  PaginationContainer,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const InfoText = styled.p`
+  color: #2c2c2c;
+  font-size: 13px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
 
 export default function AdminEvents() {
   const [events, setEvents] = useState([]);
@@ -126,7 +161,7 @@ export default function AdminEvents() {
       if (res.success) {
         setActionMessage(
           res.data.message ||
-            `Event cancelled. Refunded bookings: ${res.data.refundedBookings}`
+            `Event cancelled. Refunded bookings: ${res.data.refundedBookings}`,
         );
         fetchEvents(page);
       }
@@ -142,7 +177,7 @@ export default function AdminEvents() {
       const res = await bulkCreateSeatsApi(
         eventId,
         Number(seatForm.count),
-        seatForm.prefix
+        seatForm.prefix,
       );
       if (res.success) {
         setActionMessage(`Created ${res.data.created} seats`);
@@ -155,176 +190,220 @@ export default function AdminEvents() {
   };
 
   return (
-    <div>
-      <h2>Admin Event Management</h2>
+    <PageContainer>
+      <PageTitle>Admin Event Management</PageTitle>
 
-      {actionMessage && <p style={{ color: "blue" }}>{actionMessage}</p>}
+      {actionMessage && <InfoText>{actionMessage}</InfoText>}
 
-      <h3>{editingEventId ? "Edit Event" : "Create Event"}</h3>
-      {formMessage && <p style={{ color: "green" }}>{formMessage}</p>}
-      {formError && <p style={{ color: "red" }}>{formError}</p>}
+      <Card>
+        <SectionTitle>
+          {editingEventId ? "Edit Event" : "Create Event"}
+        </SectionTitle>
+        {formMessage && <SuccessText>{formMessage}</SuccessText>}
+        {formError && <ErrorText>{formError}</ErrorText>}
 
-      <form onSubmit={handleSubmitForm} style={{ marginBottom: "20px" }}>
-        <div>
-          <label>Name: </label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            required
-          />
-        </div>
-        <div>
-          <label>Description: </label>
-          <input
-            type="text"
-            value={form.description}
-            onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
-            }
-          />
-        </div>
-        <div>
-          <label>Venue: </label>
-          <input
-            type="text"
-            value={form.venue}
-            onChange={(e) => setForm({ ...form, venue: e.target.value })}
-            required
-          />
-        </div>
-        <div>
-          <label>Event Date: </label>
-          <input
-            type="datetime-local"
-            value={form.eventDate}
-            onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
-            required
-          />
-        </div>
-        <div>
-          <label>Price per Seat (₹): </label>
-          <input
-            type="number"
-            step="any"
-            min="0"
-            value={form.pricePerSeat}
-            onChange={(e) =>
-              setForm({ ...form, pricePerSeat: e.target.value })
-            }
-            required
-          />
-        </div>
-        <button type="submit">
-          {editingEventId ? "Update Event" : "Create Event"}
-        </button>
-        {editingEventId && (
-          <button
-            type="button"
-            onClick={handleCancelEdit}
-            style={{ marginLeft: "10px" }}
-          >
-            Cancel Edit
-          </button>
-        )}
-      </form>
+        <form onSubmit={handleSubmitForm}>
+          <FormGroup>
+            <Label htmlFor="eventName">Name</Label>
+            <Input
+              id="eventName"
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+            />
+          </FormGroup>
 
-      <h3>Events List</h3>
-      <table border="1" cellPadding="5" cellSpacing="0">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Venue</th>
-            <th>Event Date</th>
-            <th>Price per Seat (₹)</th>
-            <th>Total Seats</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {events.map((event) => (
-            <tr key={event.id}>
-              <td>{event.name}</td>
-              <td>{event.venue}</td>
-              <td>{new Date(event.eventDate).toLocaleString()}</td>
-              <td>₹{(event.pricePerSeat / 100).toFixed(2)}</td>
-              <td>{event.totalSeats}</td>
-              <td>{event.status}</td>
-              <td>
-                <button onClick={() => handleEditClick(event)}>Edit</button>
-                <button
-                  onClick={() => handleCancelEvent(event.id)}
-                  style={{ marginLeft: "5px" }}
-                >
-                  Cancel Event
-                </button>
-                <button
-                  onClick={() =>
-                    setSeatFormEventId(
-                      seatFormEventId === event.id ? null : event.id
-                    )
-                  }
-                  style={{ marginLeft: "5px" }}
-                >
-                  Manage Seats
-                </button>
+          <FormGroup>
+            <Label htmlFor="eventDescription">Description</Label>
+            <Input
+              id="eventDescription"
+              type="text"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+            />
+          </FormGroup>
 
-                {seatFormEventId === event.id && (
-                  <form
-                    onSubmit={(e) => handleBulkCreateSeats(e, event.id)}
-                    style={{
-                      marginTop: "5px",
-                      padding: "5px",
-                      border: "1px solid #ccc",
-                    }}
-                  >
-                    <div>
-                      <label>Count: </label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={seatForm.count}
-                        onChange={(e) =>
-                          setSeatForm({ ...seatForm, count: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label>Prefix: </label>
-                      <input
-                        type="text"
-                        value={seatForm.prefix}
-                        onChange={(e) =>
-                          setSeatForm({ ...seatForm, prefix: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <button type="submit">Create Seats</button>
-                  </form>
-                )}
-              </td>
+          <FormGroup>
+            <Label htmlFor="eventVenue">Venue</Label>
+            <Input
+              id="eventVenue"
+              type="text"
+              value={form.venue}
+              onChange={(e) => setForm({ ...form, venue: e.target.value })}
+              required
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor="eventDate">Event Date</Label>
+            <Input
+              id="eventDate"
+              type="datetime-local"
+              value={form.eventDate}
+              onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
+              required
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor="eventPrice">Price per Seat (₹)</Label>
+            <Input
+              id="eventPrice"
+              type="number"
+              step="any"
+              min="0"
+              value={form.pricePerSeat}
+              onChange={(e) =>
+                setForm({ ...form, pricePerSeat: e.target.value })
+              }
+              required
+            />
+          </FormGroup>
+
+          <FlexRow>
+            <Button type="submit">
+              {editingEventId ? "Update Event" : "Create Event"}
+            </Button>
+            {editingEventId && (
+              <SecondaryButton type="button" onClick={handleCancelEdit}>
+                Cancel Edit
+              </SecondaryButton>
+            )}
+          </FlexRow>
+        </form>
+      </Card>
+
+      <SectionTitle>Events List</SectionTitle>
+      {events.length === 0 ? (
+        <Card>No events found</Card>
+      ) : (
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Venue</th>
+              <th>Event Date</th>
+              <th>Price (₹)</th>
+              <th>Total Seats</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {events.map((event) => (
+              <tr key={event.id}>
+                <td>{event.name}</td>
+                <td>{event.venue}</td>
+                <td>{new Date(event.eventDate).toLocaleString()}</td>
+                <td>₹{(event.pricePerSeat / 100).toFixed(2)}</td>
+                <td>{event.totalSeats}</td>
+                <td>{event.status}</td>
+                <td>
+                  <FlexRow gap="4px">
+                    <SecondaryButton
+                      style={{ padding: "4px 8px", fontSize: "12px" }}
+                      onClick={() => handleEditClick(event)}
+                    >
+                      Edit
+                    </SecondaryButton>
+                    <DangerButton
+                      style={{ padding: "4px 8px", fontSize: "12px" }}
+                      onClick={() => handleCancelEvent(event.id)}
+                    >
+                      Cancel
+                    </DangerButton>
+                    <SecondaryButton
+                      style={{ padding: "4px 8px", fontSize: "12px" }}
+                      onClick={() =>
+                        setSeatFormEventId(
+                          seatFormEventId === event.id ? null : event.id,
+                        )
+                      }
+                    >
+                      Seats
+                    </SecondaryButton>
+                    <Link
+                      to={`/admin/events/${event.id}/seats`}
+                      style={{
+                        fontSize: "12px",
+                        color: "#1a1a1a",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Overview
+                    </Link>
+                  </FlexRow>
 
-      <div style={{ marginTop: "10px" }}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                  {seatFormEventId === event.id && (
+                    <Card style={{ marginTop: "8px", padding: "8px" }}>
+                      <form
+                        onSubmit={(e) => handleBulkCreateSeats(e, event.id)}
+                      >
+                        <FormGroup>
+                          <Label style={{ fontSize: "12px" }}>Seat Count</Label>
+                          <Input
+                            type="number"
+                            min="1"
+                            value={seatForm.count}
+                            onChange={(e) =>
+                              setSeatForm({
+                                ...seatForm,
+                                count: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label style={{ fontSize: "12px" }}>Prefix</Label>
+                          <Input
+                            type="text"
+                            value={seatForm.prefix}
+                            onChange={(e) =>
+                              setSeatForm({
+                                ...seatForm,
+                                prefix: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </FormGroup>
+                        <Button
+                          type="submit"
+                          style={{ padding: "4px 8px", fontSize: "12px" }}
+                        >
+                          Create Seats
+                        </Button>
+                      </form>
+                    </Card>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+
+      <PaginationContainer>
+        <SecondaryButton
+          disabled={page <= 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
           Previous
-        </button>
-        <span style={{ margin: "0 10px" }}>
+        </SecondaryButton>
+        <span>
           Page {pagination.page} of {pagination.totalPages}
         </span>
-        <button
+        <SecondaryButton
           disabled={page >= pagination.totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
           Next
-        </button>
-      </div>
-    </div>
+        </SecondaryButton>
+      </PaginationContainer>
+    </PageContainer>
   );
 }

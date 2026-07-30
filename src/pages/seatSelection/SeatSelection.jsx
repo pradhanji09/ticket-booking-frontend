@@ -1,10 +1,67 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import {
   getEventDetails,
   getEventSeats,
   reserveSeatsApi,
 } from "./seatSelectionService";
+import {
+  PageContainer,
+  Card,
+  Button,
+  ErrorText,
+  FlexRow,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const DetailText = styled.p`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const SeatGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const SeatButton = styled.button`
+  padding: 8px 12px;
+  border-radius: ${({ theme }) => theme.radius};
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  background-color: ${({ isSelected, isAvailable, theme }) =>
+    isSelected
+      ? theme.colors.primary
+      : isAvailable
+        ? theme.colors.background
+        : theme.colors.surface};
+  color: ${({ isSelected, isAvailable, theme }) =>
+    isSelected
+      ? "#ffffff"
+      : isAvailable
+        ? theme.colors.text
+        : theme.colors.textMuted};
+  opacity: ${({ isAvailable, isSelected }) =>
+    isAvailable || isSelected ? 1 : 0.6};
+`;
 
 export default function SeatSelection() {
   const { id } = useParams();
@@ -64,56 +121,56 @@ export default function SeatSelection() {
   const totalPrice = selectedSeatIds.length * (event?.pricePerSeat || 0);
 
   return (
-    <div>
-      <h2>Seat Selection</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <PageContainer>
+      <PageTitle>Seat Selection</PageTitle>
+      {error && <ErrorText>{error}</ErrorText>}
+
       {event && (
-        <div>
-          <h3>{event.name}</h3>
-          <p>Venue: {event.venue}</p>
-          <p>Date: {new Date(event.eventDate).toLocaleDateString()}</p>
-          <p>Price per seat: ₹{(event.pricePerSeat / 100).toFixed(2)}</p>
-        </div>
+        <Card>
+          <SectionTitle>{event.name}</SectionTitle>
+          {event.venue && <DetailText>Venue: {event.venue}</DetailText>}
+          <DetailText>
+            Date: {new Date(event.eventDate).toLocaleDateString()}
+          </DetailText>
+          <DetailText>
+            Price per seat: ₹{(event.pricePerSeat / 100).toFixed(2)}
+          </DetailText>
+        </Card>
       )}
 
-      <h3>Seats</h3>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "8px",
-          marginBottom: "20px",
-        }}
-      >
-        {seats.map((seat) => {
-          const isAvailable = seat.status === "AVAILABLE";
-          const isSelected = selectedSeatIds.includes(seat.id);
-          return (
-            <button
-              key={seat.id}
-              disabled={!isAvailable}
-              onClick={() => toggleSeat(seat.id)}
-              style={{
-                padding: "10px 15px",
-                backgroundColor: isSelected
-                  ? "#4CAF50"
-                  : isAvailable
-                    ? "#fff"
-                    : "#ccc",
-                color: isSelected ? "#fff" : "#000",
-                cursor: isAvailable ? "pointer" : "not-allowed",
-              }}
-            >
-              {seat.seatNumber}
-            </button>
-          );
-        })}
-      </div>
+      <Card>
+        <SectionTitle>Select Seats</SectionTitle>
+        <SeatGrid>
+          {seats.map((seat) => {
+            const isAvailable = seat.status === "AVAILABLE";
+            const isSelected = selectedSeatIds.includes(seat.id);
+            return (
+              <SeatButton
+                key={seat.id}
+                disabled={!isAvailable}
+                isSelected={isSelected}
+                isAvailable={isAvailable}
+                onClick={() => toggleSeat(seat.id)}
+              >
+                {seat.seatNumber}
+              </SeatButton>
+            );
+          })}
+        </SeatGrid>
 
-      <p>Total Price: ₹{(totalPrice / 100).toFixed(2)}</p>
-      <button disabled={selectedSeatIds.length === 0} onClick={handleReserve}>
-        Reserve Seats
-      </button>
-    </div>
+        <FlexRow style={{ justifyContent: "space-between" }}>
+          <div>
+            <strong>Total Price: </strong>
+            <span>₹{(totalPrice / 100).toFixed(2)}</span>
+          </div>
+          <Button
+            disabled={selectedSeatIds.length === 0}
+            onClick={handleReserve}
+          >
+            Reserve Seats
+          </Button>
+        </FlexRow>
+      </Card>
+    </PageContainer>
   );
 }

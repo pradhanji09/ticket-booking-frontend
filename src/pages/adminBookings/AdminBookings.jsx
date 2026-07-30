@@ -1,8 +1,35 @@
 import { useState, useEffect } from "react";
+import styled from "styled-components";
 import {
   getAdminBookings,
   cancelAdminBookingApi,
 } from "./adminBookingsService";
+import {
+  PageContainer,
+  Card,
+  Table,
+  Input,
+  Select,
+  Label,
+  FormGroup,
+  Button,
+  DangerButton,
+  SecondaryButton,
+  FlexRow,
+  PaginationContainer,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const InfoText = styled.p`
+  color: #2c2c2c;
+  font-size: 13px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
@@ -65,57 +92,55 @@ export default function AdminBookings() {
   };
 
   return (
-    <div>
-      <h2>Admin Booking Dashboard</h2>
+    <PageContainer>
+      <PageTitle>Admin Booking Dashboard</PageTitle>
 
-      {actionMessage && <p style={{ color: "blue" }}>{actionMessage}</p>}
+      {actionMessage && <InfoText>{actionMessage}</InfoText>}
 
-      <form onSubmit={handleApplyFilters} style={{ marginBottom: "20px" }}>
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <label>User ID: </label>
-            <input
-              type="text"
-              value={userIdInput}
-              onChange={(e) => setUserIdInput(e.target.value)}
-              placeholder="User ID"
-            />
-          </div>
-          <div>
-            <label>Event ID: </label>
-            <input
-              type="text"
-              value={eventIdInput}
-              onChange={(e) => setEventIdInput(e.target.value)}
-              placeholder="Event ID"
-            />
-          </div>
-          <div>
-            <label>Status: </label>
-            <select
-              value={statusInput}
-              onChange={(e) => setStatusInput(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="CONFIRMED">CONFIRMED</option>
-              <option value="CANCELLED">CANCELLED</option>
-            </select>
-          </div>
-          <button type="submit">Apply Filters</button>
-        </div>
-      </form>
+      <Card>
+        <form onSubmit={handleApplyFilters}>
+          <FlexRow gap="12px" style={{ alignItems: "flex-end" }}>
+            <div>
+              <Label htmlFor="userIdInput">User ID</Label>
+              <Input
+                id="userIdInput"
+                type="text"
+                value={userIdInput}
+                onChange={(e) => setUserIdInput(e.target.value)}
+                placeholder="User ID"
+              />
+            </div>
+            <div>
+              <Label htmlFor="eventIdInput">Event ID</Label>
+              <Input
+                id="eventIdInput"
+                type="text"
+                value={eventIdInput}
+                onChange={(e) => setEventIdInput(e.target.value)}
+                placeholder="Event ID"
+              />
+            </div>
+            <div>
+              <Label htmlFor="statusInput">Status</Label>
+              <Select
+                id="statusInput"
+                value={statusInput}
+                onChange={(e) => setStatusInput(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="CONFIRMED">CONFIRMED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </Select>
+            </div>
+            <Button type="submit">Apply Filters</Button>
+          </FlexRow>
+        </form>
+      </Card>
 
       {bookings.length === 0 ? (
-        <p>No bookings found</p>
+        <Card>No bookings found</Card>
       ) : (
-        <table border="1" cellPadding="5" cellSpacing="0">
+        <Table>
           <thead>
             <tr>
               <th>User Name</th>
@@ -140,31 +165,34 @@ export default function AdminBookings() {
                 <td>{new Date(b.createdAt).toLocaleString()}</td>
                 <td>
                   {b.status === "CONFIRMED" && (
-                    <button onClick={() => handleCancelBooking(b.id)}>
+                    <DangerButton
+                      style={{ padding: "4px 8px", fontSize: "12px" }}
+                      onClick={() => handleCancelBooking(b.id)}
+                    >
                       Cancel Booking
-                    </button>
+                    </DangerButton>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
 
-      <div style={{ marginTop: "10px" }}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+      <PaginationContainer>
+        <SecondaryButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
           Previous
-        </button>
-        <span style={{ margin: "0 10px" }}>
+        </SecondaryButton>
+        <span>
           Page {pagination.page} of {pagination.totalPages}
         </span>
-        <button
+        <SecondaryButton
           disabled={page >= pagination.totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
           Next
-        </button>
-      </div>
-    </div>
+        </SecondaryButton>
+      </PaginationContainer>
+    </PageContainer>
   );
 }

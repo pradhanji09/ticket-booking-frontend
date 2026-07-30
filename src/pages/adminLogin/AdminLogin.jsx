@@ -1,7 +1,39 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { adminLoginApi } from "./adminLoginService";
 import { useAuth } from "../../context/AuthContext";
+import {
+  PageContainer,
+  Card,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  ErrorText,
+} from "../../components/ui";
+
+const AuthWrapper = styled(PageContainer)`
+  max-width: 400px;
+  margin-top: 40px;
+`;
+
+const AuthHeader = styled.h2`
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+const FooterText = styled.p`
+  margin-top: ${({ theme }) => theme.spacing.md};
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.textMuted};
+
+  a {
+    color: ${({ theme }) => theme.colors.text};
+    text-decoration: underline;
+  }
+`;
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -25,33 +57,41 @@ export default function AdminLogin() {
   };
 
   return (
-    <div>
-      <h2>Admin Login</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email: </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password: </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login as Admin</button>
-      </form>
-      <p>
-        User login? <Link to="/login">User Login</Link>
-      </p>
-    </div>
+    <AuthWrapper>
+      <Card>
+        <AuthHeader>Admin Login</AuthHeader>
+        {error && <ErrorText>{error}</ErrorText>}
+        <form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label htmlFor="admin-email">Email</Label>
+            <Input
+              id="admin-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="Admin Email"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="admin-password">Password</Label>
+            <Input
+              id="admin-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Admin Password"
+            />
+          </FormGroup>
+          <Button type="submit" style={{ width: "100%" }}>
+            Login as Admin
+          </Button>
+        </form>
+        <FooterText>
+          User login? <Link to="/login">User Login</Link>
+        </FooterText>
+      </Card>
+    </AuthWrapper>
   );
 }

@@ -1,5 +1,26 @@
 import { useState, useEffect } from "react";
+import styled from "styled-components";
 import { getMyBookings } from "./bookingsService";
+import {
+  PageContainer,
+  Card,
+  Table,
+  Select,
+  Label,
+  FlexRow,
+  SecondaryButton,
+  PaginationContainer,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const FilterGroup = styled(FlexRow)`
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([]);
@@ -32,22 +53,28 @@ export default function Bookings() {
   };
 
   return (
-    <div>
-      <h2>My Bookings</h2>
+    <PageContainer>
+      <PageTitle>My Bookings</PageTitle>
 
-      <div style={{ marginBottom: "15px" }}>
-        <label>Status Filter: </label>
-        <select value={statusFilter} onChange={handleFilterChange}>
+      <FilterGroup>
+        <Label htmlFor="statusFilter" style={{ marginBottom: 0 }}>
+          Status Filter:
+        </Label>
+        <Select
+          id="statusFilter"
+          value={statusFilter}
+          onChange={handleFilterChange}
+        >
           <option value="">All</option>
           <option value="CONFIRMED">CONFIRMED</option>
           <option value="CANCELLED">CANCELLED</option>
-        </select>
-      </div>
+        </Select>
+      </FilterGroup>
 
       {bookings.length === 0 ? (
-        <p>No bookings yet</p>
+        <Card>No bookings yet</Card>
       ) : (
-        <table border="1" cellPadding="5" cellSpacing="0">
+        <Table>
           <thead>
             <tr>
               <th>Event Name</th>
@@ -70,23 +97,26 @@ export default function Bookings() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
 
-      <div style={{ marginTop: "10px" }}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+      <PaginationContainer>
+        <SecondaryButton
+          disabled={page <= 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
           Previous
-        </button>
-        <span style={{ margin: "0 10px" }}>
+        </SecondaryButton>
+        <span>
           Page {pagination.page} of {pagination.totalPages}
         </span>
-        <button
+        <SecondaryButton
           disabled={page >= pagination.totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
           Next
-        </button>
-      </div>
-    </div>
+        </SecondaryButton>
+      </PaginationContainer>
+    </PageContainer>
   );
 }

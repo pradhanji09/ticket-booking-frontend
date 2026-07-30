@@ -1,6 +1,33 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
+import styled from "styled-components";
 import { confirmBookingApi } from "./bookingConfirmService";
+import {
+  PageContainer,
+  Card,
+  Button,
+  ErrorText,
+  FormGroup,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const DetailText = styled.p`
+  font-size: 14px;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const TimerText = styled.p`
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
 
 export default function BookingConfirm() {
   const { reservationGroupId } = useParams();
@@ -14,7 +41,9 @@ export default function BookingConfirm() {
 
   const calculateRemaining = () => {
     if (!expiresAt) return 0;
-    const diff = Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000);
+    const diff = Math.floor(
+      (new Date(expiresAt).getTime() - Date.now()) / 1000,
+    );
     return diff > 0 ? diff : 0;
   };
 
@@ -41,10 +70,17 @@ export default function BookingConfirm() {
 
   if (!amount || !expiresAt) {
     return (
-      <div>
-        <p>No active reservation, please select seats again</p>
-        <Link to="/events">Back to Events</Link>
-      </div>
+      <PageContainer>
+        <Card>
+          <DetailText>No active reservation found.</DetailText>
+          <Link
+            to="/events"
+            style={{ textDecoration: "underline", color: "#1a1a1a" }}
+          >
+            Back to Events
+          </Link>
+        </Card>
+      </PageContainer>
     );
   }
 
@@ -76,43 +112,56 @@ export default function BookingConfirm() {
   };
 
   return (
-    <div>
-      <h2>Booking Confirmation</h2>
+    <PageContainer>
+      <PageTitle>Booking Confirmation</PageTitle>
 
-      <p>Reservation Group ID: {reservationGroupId}</p>
-      <p>Amount to Pay: ₹{(amount / 100).toFixed(2)}</p>
+      <Card>
+        <FormGroup>
+          <DetailText>
+            <strong>Reservation Group ID:</strong> {reservationGroupId}
+          </DetailText>
+          <DetailText>
+            <strong>Amount to Pay:</strong> ₹{(amount / 100).toFixed(2)}
+          </DetailText>
+        </FormGroup>
 
-      {remainingSeconds > 0 ? (
-        <p>Time Remaining: {formatTime(remainingSeconds)}</p>
-      ) : (
-        <div>
-          <p style={{ color: "red" }}>Reservation expired</p>
-          <p>
-            <Link to="/events">Back to Events</Link>
-          </p>
-        </div>
-      )}
+        {remainingSeconds > 0 ? (
+          <TimerText>Time Remaining: {formatTime(remainingSeconds)}</TimerText>
+        ) : (
+          <ErrorText>Reservation expired</ErrorText>
+        )}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <ErrorText>{error}</ErrorText>}
 
-      {errorCode === 402 && (
-        <p>
-          <Link to="/wallet">Add Money to Wallet</Link>
-        </p>
-      )}
+        {errorCode === 402 && (
+          <FormGroup>
+            <Link
+              to="/wallet"
+              style={{ color: "#2c2c2c", textDecoration: "underline" }}
+            >
+              Add Money to Wallet
+            </Link>
+          </FormGroup>
+        )}
 
-      {(errorCode === 410 || errorCode === 409) && (
-        <p>
-          <Link to="/events">Back to Events</Link>
-        </p>
-      )}
+        {(errorCode === 410 || errorCode === 409 || remainingSeconds <= 0) && (
+          <FormGroup>
+            <Link
+              to="/events"
+              style={{ color: "#2c2c2c", textDecoration: "underline" }}
+            >
+              Back to Events
+            </Link>
+          </FormGroup>
+        )}
 
-      <button
-        disabled={remainingSeconds <= 0 || isSubmitting}
-        onClick={handleConfirm}
-      >
-        {isSubmitting ? "Processing..." : "Confirm & Pay"}
-      </button>
-    </div>
+        <Button
+          disabled={remainingSeconds <= 0 || isSubmitting}
+          onClick={handleConfirm}
+        >
+          {isSubmitting ? "Processing..." : "Confirm & Pay"}
+        </Button>
+      </Card>
+    </PageContainer>
   );
 }

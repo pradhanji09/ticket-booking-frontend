@@ -17,6 +17,7 @@ import AdminEvents from "./pages/adminEvents/AdminEvents";
 import AdminSeatOverview from "./pages/adminSeatOverview/AdminSeatOverview";
 import AdminBookings from "./pages/adminBookings/AdminBookings";
 import AdminTransactions from "./pages/adminTransactions/AdminTransactions";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
@@ -24,89 +25,90 @@ export default function App() {
       <GlobalStyle />
       <AuthProvider>
         <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
+          <Navbar />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
 
-          <Route
-            path="/events"
-            element={
-              <ProtectedRoute>
-                <Events />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/events/:id"
-            element={
-              <ProtectedRoute>
-                <SeatSelection />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/booking/confirm/:reservationGroupId"
-            element={
-              <ProtectedRoute>
-                <BookingConfirm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/wallet"
-            element={
-              <ProtectedRoute>
-                <Wallet />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bookings"
-            element={
-              <ProtectedRoute>
-                <Bookings />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/events"
+              element={
+                <ProtectedRoute>
+                  <Events />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/events/:id"
+              element={
+                <ProtectedRoute>
+                  <SeatSelection />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/booking/confirm/:reservationGroupId"
+              element={
+                <ProtectedRoute>
+                  <BookingConfirm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/wallet"
+              element={
+                <ProtectedRoute>
+                  <Wallet />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bookings"
+              element={
+                <ProtectedRoute>
+                  <Bookings />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/admin/events"
-            element={
-              <AdminRoute>
-                <AdminEvents />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/events/:id/seats"
-            element={
-              <AdminRoute>
-                <AdminSeatOverview />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/bookings"
-            element={
-              <AdminRoute>
-                <AdminBookings />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/transactions"
-            element={
-              <AdminRoute>
-                <AdminTransactions />
-              </AdminRoute>
-            }
-          />
+            <Route
+              path="/admin/events"
+              element={
+                <AdminRoute>
+                  <AdminEvents />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/events/:id/seats"
+              element={
+                <AdminRoute>
+                  <AdminSeatOverview />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/bookings"
+              element={
+                <AdminRoute>
+                  <AdminBookings />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/transactions"
+              element={
+                <AdminRoute>
+                  <AdminTransactions />
+                </AdminRoute>
+              }
+            />
 
-          <Route path="/" element={<Navigate to="/events" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  </ThemeProvider>
+            <Route path="/" element={<Navigate to="/events" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

@@ -1,6 +1,32 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { getEvents } from "./eventsService";
+import {
+  PageContainer,
+  Card,
+  Button,
+  SecondaryButton,
+  PaginationContainer,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const EventTitle = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const EventDetail = styled.p`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+`;
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -35,50 +61,55 @@ export default function Events() {
   }, [page]);
 
   return (
-    <div>
-      <h2>Events</h2>
+    <PageContainer>
+      <PageTitle>Events</PageTitle>
       {events.length === 0 ? (
-        <p>No events available</p>
+        <Card>
+          <EventDetail>No events available</EventDetail>
+        </Card>
       ) : (
         <div>
           {events.map((event) => (
-            <div
-              key={event._id}
-              style={{
-                border: "1px solid #ccc",
-                padding: "10px",
-                marginBottom: "10px",
-              }}
-            >
-              <h3>{event.name}</h3>
-              {event.description && <p>{event.description}</p>}
-              <p>Date: {new Date(event.eventDate).toLocaleString()}</p>
-              <p>Price: ₹{event.pricePerSeat}</p>
-              <p>
+            <Card key={event._id || event.id}>
+              <EventTitle>{event.name}</EventTitle>
+              {event.description && (
+                <EventDetail>{event.description}</EventDetail>
+              )}
+              <EventDetail>
+                Date: {new Date(event.eventDate).toLocaleString()}
+              </EventDetail>
+              <EventDetail>Price: ₹{event.pricePerSeat}</EventDetail>
+              <EventDetail>
                 Total Seats: {event.totalSeats} | Status: {event.status}
-              </p>
-              <button onClick={() => navigate(`/events/${event._id}`)}>
+              </EventDetail>
+              <Button
+                style={{ marginTop: "8px" }}
+                onClick={() => navigate(`/events/${event._id || event.id}`)}
+              >
                 View Seats
-              </button>
-            </div>
+              </Button>
+            </Card>
           ))}
         </div>
       )}
 
-      <div style={{ marginTop: "10px" }}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+      <PaginationContainer>
+        <SecondaryButton
+          disabled={page <= 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
           Previous
-        </button>
-        <span style={{ margin: "0 10px" }}>
+        </SecondaryButton>
+        <span>
           Page {pagination.page} of {pagination.totalPages}
         </span>
-        <button
+        <SecondaryButton
           disabled={page >= pagination.totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
           Next
-        </button>
-      </div>
-    </div>
+        </SecondaryButton>
+      </PaginationContainer>
+    </PageContainer>
   );
 }

@@ -1,5 +1,47 @@
 import { useState, useEffect } from "react";
-import { getBalance, creditWallet, getWalletTransactions } from "./walletService";
+import styled from "styled-components";
+import {
+  getBalance,
+  creditWallet,
+  getWalletTransactions,
+} from "./walletService";
+import {
+  PageContainer,
+  Card,
+  Table,
+  Input,
+  Button,
+  ErrorText,
+  SuccessText,
+  FlexRow,
+  SecondaryButton,
+  PaginationContainer,
+} from "../../components/ui";
+
+const PageTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const BalanceCard = styled(Card)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const BalanceAmount = styled.span`
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
 
 export default function Wallet() {
   const [balance, setBalance] = useState(0);
@@ -64,64 +106,85 @@ export default function Wallet() {
   };
 
   return (
-    <div>
-      <h2>Wallet</h2>
-      <p>Balance: ₹{(balance / 100).toFixed(2)}</p>
+    <PageContainer>
+      <PageTitle>Wallet</PageTitle>
 
-      <h3>Add Money</h3>
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleAddMoney}>
-        <input
-          type="number"
-          step="any"
-          min="1"
-          placeholder="Amount in ₹"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
-        <button type="submit">Add Money</button>
-      </form>
+      <BalanceCard>
+        <div>
+          <span style={{ fontSize: "13px", color: "#666" }}>
+            Current Balance
+          </span>
+          <br />
+          <BalanceAmount>₹{(balance / 100).toFixed(2)}</BalanceAmount>
+        </div>
+      </BalanceCard>
 
-      <h3>Transactions</h3>
-      <table border="1" cellPadding="5" cellSpacing="0">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Amount (₹)</th>
-            <th>Reason</th>
-            <th>Balance After (₹)</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((tx) => (
-            <tr key={tx.id}>
-              <td>{tx.type}</td>
-              <td>₹{(tx.amount / 100).toFixed(2)}</td>
-              <td>{tx.reason}</td>
-              <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
-              <td>{new Date(tx.createdAt).toLocaleString()}</td>
+      <Card>
+        <SectionTitle style={{ marginTop: 0 }}>Add Money</SectionTitle>
+        {message && <SuccessText>{message}</SuccessText>}
+        {error && <ErrorText>{error}</ErrorText>}
+        <form onSubmit={handleAddMoney}>
+          <FlexRow gap="8px">
+            <Input
+              type="number"
+              step="any"
+              min="1"
+              placeholder="Amount in ₹"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              required
+              style={{ maxWidth: "250px" }}
+            />
+            <Button type="submit">Add Money</Button>
+          </FlexRow>
+        </form>
+      </Card>
+
+      <SectionTitle>Transactions</SectionTitle>
+      {transactions.length === 0 ? (
+        <Card>No transactions found</Card>
+      ) : (
+        <Table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Amount (₹)</th>
+              <th>Reason</th>
+              <th>Balance After (₹)</th>
+              <th>Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map((tx) => (
+              <tr key={tx.id}>
+                <td>{tx.type}</td>
+                <td>₹{(tx.amount / 100).toFixed(2)}</td>
+                <td>{tx.reason}</td>
+                <td>₹{(tx.balanceAfter / 100).toFixed(2)}</td>
+                <td>{new Date(tx.createdAt).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
-      <div style={{ marginTop: "10px" }}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+      <PaginationContainer>
+        <SecondaryButton
+          disabled={page <= 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
           Previous
-        </button>
-        <span style={{ margin: "0 10px" }}>
+        </SecondaryButton>
+        <span>
           Page {pagination.page} of {pagination.totalPages}
         </span>
-        <button
+        <SecondaryButton
           disabled={page >= pagination.totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
           Next
-        </button>
-      </div>
-    </div>
+        </SecondaryButton>
+      </PaginationContainer>
+    </PageContainer>
   );
 }
