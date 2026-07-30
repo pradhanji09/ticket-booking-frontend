@@ -9,6 +9,7 @@ import Wallet from "./pages/Wallet";
 import Events from "./pages/Events";
 import SeatSelection from "./pages/SeatSelection";
 import BookingConfirm from "./pages/BookingConfirm";
+import Bookings from "./pages/Bookings";
 
 export default function App() {
   return (
@@ -55,7 +56,7 @@ export default function App() {
             path="/bookings"
             element={
               <ProtectedRoute>
-                <h2>Bookings</h2>
+                <Bookings />
               </ProtectedRoute>
             }
           />
