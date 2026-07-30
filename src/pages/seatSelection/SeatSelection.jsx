@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getEventDetails, getEventSeats, reserveSeatsApi } from "./seatSelectionService";
+import {
+  getEventDetails,
+  getEventSeats,
+  reserveSeatsApi,
+} from "./seatSelectionService";
 
 export default function SeatSelection() {
   const { id } = useParams();

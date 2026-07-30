@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 import { AuthProvider } from "./context/AuthContext";
+import theme from "./styles/theme";
+import GlobalStyle from "./styles/GlobalStyle";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 import Login from "./pages/login/Login";
@@ -17,8 +20,10 @@ import AdminTransactions from "./pages/adminTransactions/AdminTransactions";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <AuthProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -102,5 +107,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+  </ThemeProvider>
   );
 }

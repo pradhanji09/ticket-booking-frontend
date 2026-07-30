@@ -16,9 +16,16 @@ export default function Events() {
   const fetchEvents = async (p) => {
     try {
       const res = await getEvents(p, 10);
-      if (res.success) {
-        setEvents(res.data.events);
-        setPagination(res.data.pagination);
+      if (res?.success) {
+        setEvents(res.events || []);
+        if (res.pagination) {
+          setPagination({
+            page: Number(res.pagination.page),
+            limit: Number(res.pagination.limit),
+            total: Number(res.pagination.total),
+            totalPages: Number(res.pagination.totalPages),
+          });
+        }
       }
     } catch (err) {}
   };
@@ -36,7 +43,7 @@ export default function Events() {
         <div>
           {events.map((event) => (
             <div
-              key={event.id}
+              key={event._id}
               style={{
                 border: "1px solid #ccc",
                 padding: "10px",
@@ -44,13 +51,13 @@ export default function Events() {
               }}
             >
               <h3>{event.name}</h3>
-              <p>Venue: {event.venue}</p>
-              <p>Date: {new Date(event.eventDate).toLocaleDateString()}</p>
-              <p>Price: ₹{(event.pricePerSeat / 100).toFixed(2)}</p>
+              {event.description && <p>{event.description}</p>}
+              <p>Date: {new Date(event.eventDate).toLocaleString()}</p>
+              <p>Price: ₹{event.pricePerSeat}</p>
               <p>
-                Seats: {event.availableSeats} / {event.totalSeats}
+                Total Seats: {event.totalSeats} | Status: {event.status}
               </p>
-              <button onClick={() => navigate(`/events/${event.id}`)}>
+              <button onClick={() => navigate(`/events/${event._id}`)}>
                 View Seats
               </button>
             </div>
