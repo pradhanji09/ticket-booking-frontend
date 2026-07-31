@@ -1,8 +1,6 @@
 ## ShowPass: Ticket Booking, Wallet & Admin System
 
-A high-performance Single Page Application (SPA) built with **React**, **Vite**, **styled-components**, **React Router v6**, and **Axios**. The frontend provides a seamless workflow for users to browse events, select seats on an interactive grid, hold temporary 5-minute seat reservations, and complete idempotent wallet payments. It also features a comprehensive Admin Dashboard for managing events, bulk seat creation, system-wide bookings, and transaction audit logs.
-
-This repository serves as the frontend submission for the full-stack ticket booking assessment.
+A Single Page Application (SPA) built with **React**, **Vite**. The frontend provides a seamless workflow for users to browse events, select seats on an interactive grid, hold temporary **5-minute seat reservations**, and complete **idempotent wallet** payments. It also features a comprehensive **Admin Dashboard** for managing events, bulk seat creation, system-wide bookings, and transaction audit logs.
 
 ---
 
@@ -31,7 +29,7 @@ This repository serves as the frontend submission for the full-stack ticket book
 
 - **Live URL**: [https://showpass-three.vercel.app/](https://showpass-three.vercel.app/)
 
-> **Note on Testing Roles**: Both standard user accounts and admin accounts access the application through the primary authentication system (`/login`). Upon login, the application inspects the signed JWT role claim (`USER` or `ADMIN`) and automatically routes administrators to `/admin/events` and regular users to `/events`. Attempting to access protected admin routes without an admin role will automatically redirect users to `/admin/login` (which routes back to the main login portal).
+> **Note on Testing Roles**: Both standard user accounts and admin accounts access the application through the primary authentication system (`/login`). Upon login, the application inspects the signed JWT role claim (`USER` or `ADMIN`) and automatically routes administrators to `/admin/events` and regular users to `/events`. Attempting to access protected admin routes without an admin role will automatically redirect users to `/login` (which routes back to the main login portal).
 
 ---
 
