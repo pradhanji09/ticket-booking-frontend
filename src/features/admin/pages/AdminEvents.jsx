@@ -14,6 +14,7 @@ import {
   TableWrapper,
   Table,
   Input,
+  Select,
   Label,
   FormGroup,
   Button,
@@ -55,6 +56,7 @@ export default function AdminEvents() {
     totalPages: 1,
   });
   const [page, setPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -77,19 +79,30 @@ export default function AdminEvents() {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
-  const fetchEvents = async (p) => {
+  const fetchEvents = async (p, status = "") => {
     try {
-      const res = await getAdminEvents(p, 10);
+      const res = await getAdminEvents(p, 10, status);
       if (res.success) {
-        setEvents(res.events);
-        setPagination(res.pagination);
+        let list = res.events || [];
+        if (status) {
+          list = list.filter((e) => e.status === status);
+        }
+        setEvents(list);
+        setPagination(
+          res.pagination || {
+            page: Number(p),
+            limit: 10,
+            total: list.length,
+            totalPages: 1,
+          },
+        );
       }
     } catch (err) {}
   };
 
   useEffect(() => {
-    fetchEvents(page);
-  }, [page]);
+    fetchEvents(page, statusFilter);
+  }, [page, statusFilter]);
 
   const resetForm = () => {
     setForm({
@@ -119,14 +132,14 @@ export default function AdminEvents() {
           setFormMessage("Event updated successfully");
           setEditingEventId(null);
           resetForm();
-          fetchEvents(page);
+          fetchEvents(page, statusFilter);
         }
       } else {
         const res = await createEventApi(payload);
         if (res.success) {
           setFormMessage("Event created successfully");
           resetForm();
-          fetchEvents(page);
+          fetchEvents(page, statusFilter);
         }
       }
     } catch (err) {
@@ -163,7 +176,7 @@ export default function AdminEvents() {
           res.data.message ||
             `Event cancelled. Refunded bookings: ${res.data.refundedBookings}`,
         );
-        fetchEvents(page);
+        fetchEvents(page, statusFilter);
       }
     } catch (err) {
       setActionMessage(err.error || err.message || "Failed to cancel event");
@@ -182,7 +195,7 @@ export default function AdminEvents() {
       if (res.success) {
         setActionMessage(`Created ${res.data.created} seats`);
         setSeatFormEventId(null);
-        fetchEvents(page);
+        fetchEvents(page, statusFilter);
       }
     } catch (err) {
       setActionMessage(err.error || err.message || "Failed to create seats");
@@ -272,7 +285,37 @@ export default function AdminEvents() {
         </form>
       </Card>
 
-      <SectionTitle>Events Catalog</SectionTitle>
+      <FlexRow
+        style={{
+          marginBottom: "12px",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "12px",
+        }}
+      >
+        <SectionTitle style={{ marginBottom: 0 }}>Events Catalog</SectionTitle>
+        <FlexRow gap="8px" style={{ alignItems: "center" }}>
+          <Label
+            htmlFor="statusFilter"
+            style={{ marginBottom: 0, fontSize: "13px" }}
+          >
+            Filter:
+          </Label>
+          <Select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">All Statuses</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </Select>
+        </FlexRow>
+      </FlexRow>
       {events.length === 0 ? (
         <Card style={{ textAlign: "center", padding: "24px" }}>
           <p style={{ color: "#64748b" }}>No events found.</p>

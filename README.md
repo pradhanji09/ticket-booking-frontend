@@ -109,20 +109,20 @@ To support HTML5 client-side routing on Vercel (preventing 404 errors on browser
 
 ## Pages & Routes Overview
 
-| Route                                  | Access Level      | Description                                                                                                          |
-| :------------------------------------- | :---------------- | :------------------------------------------------------------------------------------------------------------------- |
-| `/login`                               | Public            | Authentication page for existing Users and Admins.                                                                   |
-| `/signup`                              | Public            | User registration page.                                                                                              |
-| `/events`                              | User (Protected)  | Browse active events with dates, prices, and available seat metrics.                                                 |
-| `/events/:id`                          | User (Protected)  | Event details & interactive seat grid for choosing available seats.                                                  |
-| `/booking/confirm/:reservationGroupId` | User (Protected)  | Reservation checkout page with 5-minute countdown timer & idempotent wallet payment.                                 |
-| `/wallet`                              | User (Protected)  | Wallet management: view balance, top-up funds, and view transaction history.                                         |
-| `/bookings`                            | User (Protected)  | Personal booking history with status filters (`CONFIRMED` / `CANCELLED`) & refund/cancel action.                     |
-| `/admin/events`                        | Admin (Protected) | Event management: create events, edit details, cancel events (with auto-refunds), & bulk seat creation.              |
-| `/admin/events/:id/seats`              | Admin (Protected) | Visual seat map overview filtered by status (`AVAILABLE`, `RESERVED`, `BOOKED`).                                     |
-| `/admin/bookings`                      | Admin (Protected) | System-wide booking dashboard with User ID, Event ID, and Status filters, plus manual cancellation & refund trigger. |
-| `/admin/transactions`                  | Admin (Protected) | System-wide transaction audit log with User ID, Type, and Reason filters.                                            |
-| `/` / `*`                              | Public / Redirect | Smart fallback route: redirects to `/login` if unauthenticated, `/admin/events` for Admins, and `/events` for Users. |
+| Route                                  | Access Level      | Description                                                                                                                                      |
+| :------------------------------------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/login`                               | Public            | Authentication page for existing Users and Admins.                                                                                               |
+| `/signup`                              | Public            | User registration page.                                                                                                                          |
+| `/events`                              | User (Protected)  | Browse active events with dates, prices, and available seat metrics.                                                                             |
+| `/events/:id`                          | User (Protected)  | Event details & interactive seat grid for choosing available seats.                                                                              |
+| `/booking/confirm/:reservationGroupId` | User (Protected)  | Reservation checkout page with 5-minute countdown timer & idempotent wallet payment.                                                             |
+| `/wallet`                              | User (Protected)  | Wallet management: view balance, top-up funds, and view transaction history.                                                                     |
+| `/bookings`                            | User (Protected)  | Personal booking history with status filters (`CONFIRMED` / `CANCELLED`) & refund/cancel action.                                                 |
+| `/admin/events`                        | Admin (Protected) | Event management: create events, edit details, filter by status (`ACTIVE`/`CANCELLED`), cancel events (with auto-refunds), & bulk seat creation. |
+| `/admin/events/:id/seats`              | Admin (Protected) | Visual seat map overview filtered by status (`AVAILABLE`, `RESERVED`, `BOOKED`).                                                                 |
+| `/admin/bookings`                      | Admin (Protected) | System-wide booking dashboard with User ID, Event ID, and Status filters, plus manual cancellation & refund trigger.                             |
+| `/admin/transactions`                  | Admin (Protected) | System-wide transaction audit log with User ID, Type, and Reason filters.                                                                        |
+| `/` / `*`                              | Public / Redirect | Smart fallback route: redirects to `/login` if unauthenticated, `/admin/events` for Admins, and `/events` for Users.                             |
 
 ---
 
@@ -133,7 +133,7 @@ To support HTML5 client-side routing on Vercel (preventing 404 errors on browser
 - **Registration & Login**: Clean form interfaces connecting to backend endpoints.
 - **JWT Storage**: JWT token and decoded user profile claims are stored in `localStorage`.
 - **Axios Interceptors**: Automatically attaches `Bearer <token>` to outgoing HTTP requests and redirects to `/login` upon receiving `401 Unauthorized` responses.
-- **Role Guards**: Route wrappers (`ProtectedRoute`, `AdminRoute`) enforce client-side navigation restrictions based on the user's role (`USER` vs `ADMIN`).
+- **Role Guards**: Route wrappers (`ProtectedRoute`, `AdminRoute`) enforce strict two-way client-side navigation restrictions based on the user's role (`USER` vs `ADMIN`). Admins attempting to access user routes are redirected to `/admin/events`, and regular Users attempting to access admin routes are redirected to `/events`.
 
 ### Wallet System
 
@@ -143,7 +143,7 @@ To support HTML5 client-side routing on Vercel (preventing 404 errors on browser
 
 ### Event Browsing & Interactive Seat Selection
 
-- **Catalog**: Lists all active events with date formatting and price per seat.
+- **Catalog**: Lists active events with date formatting and price per seat (cancelled events are automatically hidden from regular users).
 - **Interactive Grid**: Visual representation of seats supporting states: `AVAILABLE`, `RESERVED`, and `BOOKED`.
 - **Seat Multi-Selection**: Real-time selection toggles with dynamic total cost calculation.
 
@@ -164,7 +164,7 @@ To support HTML5 client-side routing on Vercel (preventing 404 errors on browser
 
 ### Admin Dashboard
 
-- **Event Operations**: Create new events, update existing event metadata/prices, and cancel events (which automatically triggers system refunds for all confirmed bookings).
+- **Event Operations**: Create new events, update existing event metadata/prices, filter events by status (`ACTIVE` / `CANCELLED`), and cancel events (which automatically triggers system refunds for all confirmed bookings).
 - **Bulk Seat Creation**: Generate seats in bulk specifying seat count and custom prefix (e.g., prefix `S` -> `S1` to `S10`).
 - **Seat Map Inspection**: View event seat status distribution on a visual status grid.
 - **Global Booking Dashboard**: Inspect all system bookings with User ID, Event ID, and Status filtering, along with admin booking cancellation and refund capability.

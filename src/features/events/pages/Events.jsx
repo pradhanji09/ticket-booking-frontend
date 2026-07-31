@@ -90,9 +90,12 @@ export default function Events() {
 
   const fetchEvents = async (p) => {
     try {
-      const res = await getEvents(p, 10);
+      const res = await getEvents(p, 10, "ACTIVE");
       if (res?.success) {
-        setEvents(res.events || []);
+        const activeEvents = (res.events || []).filter(
+          (e) => e.status !== "CANCELLED",
+        );
+        setEvents(activeEvents);
         if (res.pagination) {
           setPagination({
             page: Number(res.pagination.page),

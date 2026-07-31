@@ -1,15 +1,15 @@
 export const theme = {
   colors: {
-    primary: "#b91c1c",         // Classic clean dark red accent
+    primary: "#b91c1c", // Classic clean dark red accent
     primaryHover: "#991b1b",
     primaryLight: "#fef2f2",
-    background: "#f8fafc",      // Slate clean neutral background
-    surface: "#ffffff",         // Pure white cards & containers
-    surfaceAlt: "#f1f5f9",      // Light gray surface
-    border: "#e2e8f0",         // Crisp 1px border
+    background: "#f8fafc", // Slate clean neutral background
+    surface: "#ffffff", // Pure white cards & containers
+    surfaceAlt: "#f1f5f9", // Light gray surface
+    border: "#e2e8f0", // Crisp 1px border
     borderDark: "#cbd5e1",
-    text: "#0f172a",            // Crisp dark slate text
-    textMuted: "#64748b",       // Secondary muted text
+    text: "#0f172a", // Crisp dark slate text
+    textMuted: "#64748b", // Secondary muted text
     textLight: "#94a3b8",
     danger: "#dc2626",
     dangerHover: "#b91c1c",
@@ -28,7 +28,7 @@ export const theme = {
     lg: "24px",
     xl: "32px",
   },
-  radius: "4px",                // Clean, non-gimmicky classic radius
+  radius: "4px", // Clean, non-gimmicky classic radius
   radiusSm: "2px",
   radiusFull: "9999px",
   font: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
